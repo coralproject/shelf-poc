@@ -1,0 +1,26 @@
+mongodb:
+  image: mongo
+  ports:
+    - "27017:27017"
+
+mongoseed:
+  build: ./mongoseed
+  links:
+    - mongodb
+
+#neo4j:
+#  image: neo4j:3.0
+#  ports:
+#    - "7474:7474"
+#    - "7687:7687"
+#  env_file:
+#    - ./test.env
+
+#dgraph:
+#  build: ./dgraph
+#  ports:
+#    - "80:8080"
+
+#neoinit:
+#  image: neoinit
+#  net: "host"

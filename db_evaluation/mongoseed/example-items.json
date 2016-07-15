@@ -1,0 +1,35 @@
+[
+	{
+		"type": "comment", 
+		"author": "bob", 
+		"text": "this is a comment"
+	},
+	{
+		"type": "comment", 
+		"author": "alice", 
+		"text": "this is another comment"
+	},
+	{
+		"type": "comment", 
+		"author": "alice", 
+		"text": "this is a comment from a pre-existing author"
+	},
+	{
+		"type": "comment", 
+		"author": "bill", 
+		"text": "this is Bill's comment", 
+		"datetime": "2016-06-14 00:00:00"
+	},
+	{
+		"type": "author", 
+		"name": "bill"
+	},
+	{
+		"type": "author", 
+		"name": "alice"
+	},
+	{
+		"type": "author", 
+		"name": "bob"
+	}
+]
