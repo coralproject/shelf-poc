@@ -1,11 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 	"math/rand"
-	"net/http"
 	"time"
 
 	"github.com/pkg/errors"
@@ -36,10 +33,16 @@ func generateUsers(num int) error {
 			ID:   currentNum,
 			Name: RandStringRunes(10),
 		}
-		currentNum++
-		if err := sendToSponge(user, "user"); err != nil {
-			return errors.Wrap(err, "Could not send item to sponge")
+		payload, err := json.Marshal(user)
+		if err != nil {
+			return errors.Wrap(err, "Could not marshal JSON user")
 		}
+		job := Job{
+			Data: payload,
+			Type: "user",
+		}
+		jobs <- job
+		currentNum++
 	}
 	return nil
 }
@@ -52,10 +55,16 @@ func generateAssets(num int) error {
 			ID:    currentNum,
 			Title: RandStringRunes(20),
 		}
-		currentNum++
-		if err := sendToSponge(asset, "asset"); err != nil {
-			return errors.Wrap(err, "Could not send item to sponge")
+		payload, err := json.Marshal(asset)
+		if err != nil {
+			return errors.Wrap(err, "Could not marshal JSON asset")
 		}
+		job := Job{
+			Data: payload,
+			Type: "asset",
+		}
+		jobs <- job
+		currentNum++
 	}
 	return nil
 }
@@ -73,38 +82,17 @@ func generateComments(numComments, numUsers, numAssets int) error {
 		if rand.Intn(2) == 1 {
 			comment.ParentID = rand.Intn(currentNum)
 		}
-		currentNum++
-		if err := sendToSponge(comment, "comment"); err != nil {
-			return errors.Wrap(err, "Could not send item to sponge")
+		payload, err := json.Marshal(comment)
+		if err != nil {
+			errors.Wrap(err, "Could not marshal JSON comment")
 		}
+		job := Job{
+			Data: payload,
+			Type: "comment",
+		}
+		jobs <- job
+		currentNum++
 	}
-	return nil
-}
-
-// sendToSponge sends a generated item to sponge for processing.
-func sendToSponge(item interface{}, typeIn string) error {
-
-	url := fmt.Sprintf("http://%s/1.0/item/coral_%s", spongeHost, typeIn)
-	payload, err := json.Marshal(item)
-	if err != nil {
-		return errors.Wrap(err, "Could not encode JSON payload to sponge")
-	}
-
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
-	if err != nil {
-		return errors.Wrap(err, "Could not create http request")
-	}
-	req.Header.Add("content-type", "application/json")
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return errors.Wrap(err, "Could not execute POST request to sponge")
-	}
-	if res.StatusCode != http.StatusOK {
-		return errors.Wrap(err, "Unexpected sponge response")
-	}
-	defer res.Body.Close()
-
 	return nil
 }
 

@@ -11,6 +11,13 @@ import (
 var (
 	numDoc     int
 	spongeHost string
+	jobs       chan Job
+	results    chan error
+)
+
+const (
+	numWorkers = 100
+	numJobs    = 200
 )
 
 func init() {
@@ -39,8 +46,17 @@ func init() {
 
 func main() {
 
+	jobs = make(chan Job, numJobs)
+	results = make(chan error, numJobs)
+	handleErrors()
+
 	log.Println("Get numbers of dummy items to be generated")
 	numComments, numUsers, numAssets := generateItemNumbers()
+
+	log.Println("Start workers")
+	for w := 1; w <= numWorkers; w++ {
+		go worker(jobs, results)
+	}
 
 	log.Println("Generate dummy users")
 	if err := generateUsers(numUsers); err != nil {
@@ -57,4 +73,5 @@ func main() {
 		log.Fatal(err)
 	}
 
+	close(jobs)
 }

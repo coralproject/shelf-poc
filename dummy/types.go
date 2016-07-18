@@ -20,3 +20,9 @@ type Comment struct {
 	ParentID int    `json:"parent_id,omitempty"`
 	Body     string `json:"body"`
 }
+
+// Job is used to encode data to be sent to sponge.
+type Job struct {
+	Data []byte
+	Type string
+}
