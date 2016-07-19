@@ -16,8 +16,8 @@ var (
 )
 
 const (
-	numWorkers = 100
-	numJobs    = 200
+	numWorkers = 2
+	numJobs    = 100
 )
 
 func init() {
