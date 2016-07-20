@@ -14,9 +14,9 @@ This POC mocks out much of this functionality, such that we can evaluate archite
 
 **Disclaimer** - The code in this repo is meant for evaluation only and should not be utilized in any production systems.  After evaluating functionality with this POC, actual shelf functionality will be implemented as part of the xenia repo.
 
-## Setting up an environment to use the POC functionality
+## Setting up your environment, usage
 
-Dependencies:
+### Dependencies:
 
   1. `sponged` - as built from the `item-cayley` branch of `xenia`
   2. MongoDB - note, you may want a separate instance of mongo running for this POC as it will create databases, indices, etc.  Just so it doesn't break anything you are currently using that is dependent on Mongo.
@@ -42,6 +42,7 @@ You will now be able to make use of the following endpoints:
     GET http://<host>:8080/asset?num=500
     ```
   - Example response:
+  
     ```
     {
       "id": "578f5324b1df410001e01d9a",
