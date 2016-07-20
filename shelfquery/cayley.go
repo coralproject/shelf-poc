@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// openCayley opens a new connection to the Cayley graph DB.
 func openCayley() (*cayley.Handle, error) {
 	store, err := cayley.NewGraph("mongo", "localhost:27017", nil)
 	if err != nil {
@@ -14,6 +15,7 @@ func openCayley() (*cayley.Handle, error) {
 	return store, nil
 }
 
+// getItemsOnAsset gets all the comments and authors related to an asset.
 func getItemsOnAsset(assetID string) ([]string, error) {
 
 	// Connect to cayley.
@@ -28,6 +30,7 @@ func getItemsOnAsset(assetID string) ([]string, error) {
 	it, _ := cayley.StartPath(store, assetID).In("contextualized_with").Or(cayley.StartPath(store, assetID).In("contextualized_with").Out("authored_by")).BuildIterator().Optimize()
 	defer it.Close()
 
+	// Gather the results.
 	var ids []string
 	for cayley.RawNext(it) {
 		if it.Result() != nil {

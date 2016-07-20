@@ -15,6 +15,7 @@ import (
 // sendToSponge sends a generated item to sponge for processing.
 func sendToSponge(payload []byte, typeIn string) error {
 
+	// Generate the request to send to sponge.
 	url := fmt.Sprintf("http://%s/1.0/item/coral_%s", spongeHost, typeIn)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
 	if err != nil {
@@ -22,6 +23,7 @@ func sendToSponge(payload []byte, typeIn string) error {
 	}
 	req.Header.Add("content-type", "application/json")
 
+	// Send the request.
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "Could not execute POST request to sponge")
@@ -29,6 +31,10 @@ func sendToSponge(payload []byte, typeIn string) error {
 	io.Copy(ioutil.Discard, res.Body)
 	res.Body.Close()
 
+	// Make sure the data import was successful.
+	if res.StatusCode != http.StatusOK {
+		return errors.Wrap(err, "Received an unexpected response from sponge")
+	}
 	return nil
 }
 

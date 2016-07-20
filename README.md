@@ -9,8 +9,8 @@ The goals of shelf are:
 This POC mocks out much of this functionality, such that we can evaluate architecture decisions, formatting, config, etc.  The POC includes the following:
 
 - Data importing/ingestion using a branch of `xenia` ([item-cayley](https://github.com/coralproject/xenia/tree/item-cayley)) with a modified internal `item` package and `sponged` cmd.
-- Dummy data and relationship generation using the `dummy` program included [here](dummy).
-- Querying based on relationships using the `relquery` web server included [here](relquery).
+- Dummy data and relationship generation using the `shelfdummy` program included [here](shelfdummy).
+- Querying based on relationships using the `shelfquery` web server included [here](shelfquery).
 
 **Disclaimer** - The code in this repo is meant for evaluation only and should not be utilized in any production systems.  After evaluating functionality with this POC, actual shelf functionality will be implemented as part of the xenia repo.
 
@@ -25,9 +25,9 @@ This POC mocks out much of this functionality, such that we can evaluate archite
 
 If you want to create dummy data for testing:
 
-  1. Build the `dummy` binary by executing `go build` [here](dummy), OR build a Docker image including the binary using the [Makefile](dummy/Makefile).  Note, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
-  2. Copy the [dummy.env](dummy/dummy.env) file to `/etc` and modify it according to where `sponged` is installed and how many documents you want to generate.
-  3. Run `dummy` (or the Docker image if you built it).  When this executes, it will:
+  1. Build the `shelfdummy` binary by executing `go build` [here](shelfdummy), OR build a Docker image including the binary using the [Makefile](shelfdummy/Makefile).  Note, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
+  2. Copy the [dummy.env](dummy/shelfdummy.env) file to `/etc` and modify it according to where `sponged` is installed and how many documents you want to generate.
+  3. Run `shelfdummy` (or the Docker image if you built it).  When this executes, it will:
     - Generate dummy items including assets, comments, and users in the proportions 5%, 80%, and 15%, respectively.
     - For each of the generated items, send the item to `sponged`, where `sponged` will format, verify, and store the item along with inserting the item and any relevant relationships into the Cayley graph DB.
 
@@ -39,8 +39,8 @@ If you want to utilize real world data for testing:
 
 ### 2. Query the dummy data
 
-1. Build the `relquery` binary by executing `go build` [here](relquery), OR build a Docker image including the binary using the [Makefile](relquery/Makefile).  Again, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
-2. Run `relquery`.
+1. Build the `shelfquery` binary by executing `go build` [here](shelfquery), OR build a Docker image including the binary using the [Makefile](shelfquery/Makefile).  Again, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
+2. Run `shelfquery`.
 
 You will now be able to make use of the following endpoints:
 

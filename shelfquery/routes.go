@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-// Route - used to pass information about a particular route
+// Route is used to pass information about a particular route.
 type Route struct {
 	Name        string
 	Method      string
@@ -10,9 +10,10 @@ type Route struct {
 	HandlerFunc http.HandlerFunc
 }
 
-// Routes - used to pass information about multiple routes
+// Routes is used to pass information about multiple routes.
 type Routes []Route
 
+// routes are the routes made available by this server.
 var routes = Routes{
 	Route{
 		"GetAsset",

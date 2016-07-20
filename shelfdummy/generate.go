@@ -12,6 +12,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+// letterRunes includes letters from which the random names/content will be generated.
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 // generateItemNumbers generates numbers of users, comments, and assets
@@ -96,7 +97,7 @@ func generateComments(numComments, numUsers, numAssets int) error {
 	return nil
 }
 
-// RandStringRunes generates a random string for our dummy data
+// RandStringRunes generates a random string for our dummy data.
 func RandStringRunes(n int) string {
 	b := make([]rune, n)
 	for i := range b {

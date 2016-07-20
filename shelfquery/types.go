@@ -2,8 +2,7 @@ package main
 
 import "gopkg.in/mgo.v2/bson"
 
-// ItemData is what an Item can hold
-//  Should be the intersection of the db and transport protocols supported
+// ItemData is some arbitrary data contained in an Item.
 type ItemData interface{}
 
 // An Item is either an asset, comment, or user.
@@ -22,7 +21,7 @@ type Rel struct {
 	ID   string `bson:"id" json:"id"` // Id of target
 }
 
-// custom error type for bases that can't be found
+// jsonErr is a custom error type for http responses.
 type jsonErr struct {
 	Code int    `json:"code"`
 	Text string `json:"text"`
