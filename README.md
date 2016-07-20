@@ -38,9 +38,11 @@ You will now be able to make use of the following endpoints:
 
 - GET `/asset?num=<number of assets>` - this endpoint will retrieve a random asset item from MongoDB, given the total number of assets from which a random sample will be pulled.
   - Example request: 
+  
     ```
     GET http://<host>:8080/asset?num=500
     ```
+  
   - Example response:
   
     ```
@@ -53,4 +55,172 @@ You will now be able to make use of the following endpoints:
         "name": "lgXlnHWIRXxeJwzYTaYO"
       }
     }
+    ```
+
+- GET `/graph?asset=<asset id>` - this endpoint will use the graph DB to retrieve all comments related to the given asset along with the users authoring the comments.
+  - Example request: 
+    
+    ```
+    GET http://<host>:8080/graph?asset=578f5324b1df410001e01da0
+    ```
+  
+  - Example response:
+  
+    ```
+    [
+      {
+        "id": "578f5321b1df410001e01716",
+        "t": "coral_user",
+        "v": 1,
+        "d": {
+          "id": 86,
+          "name": "hskmHIyABE"
+        }
+      },
+      {
+        "id": "578f5321b1df410001e01758",
+        "t": "coral_user",
+        "v": 1,
+        "d": {
+          "id": 147,
+          "name": "AIFXsRBOdv"
+        }
+      },
+      {
+        "id": "578f5339b1df410001e02945",
+        "t": "coral_comment",
+        "v": 1,
+        "d": {
+          "asset_id": 258,
+          "body": "nTFcpRoUEzrMPWSRWjlf",
+          "id": 2740,
+          "user_id": 1382
+        },
+        "rels": [
+          {
+            "n": "context",
+            "t": "coral_asset",
+            "id": "578f5324b1df410001e01da0"
+          },
+          {
+            "n": "author",
+            "t": "coral_user",
+            "id": "578f5324b1df410001e01c2c"
+          }
+        ]
+      },
+      {
+        "id": "578f533eb1df410001e02b73",
+        "t": "coral_comment",
+        "v": 1,
+        "d": {
+          "asset_id": 258,
+          "body": "rEdkZHdlsGOdVpkGdZvJ",
+          "id": 3296,
+          "parent_id": 2003,
+          "user_id": 1458
+        },
+        "rels": [
+          {
+            "n": "context",
+            "t": "coral_asset",
+            "id": "578f5324b1df410001e01da0"
+          },
+          {
+            "n": "author",
+            "t": "coral_user",
+            "id": "578f5324b1df410001e01c73"
+          },
+          {
+            "n": "parent",
+            "t": "coral_comment",
+            "id": "578f5333b1df410001e02665"
+          }
+        ]
+      }
+    ]
+    ```
+
+- GET `/mongo?asset=<asset id>` - this endpoint will use only mongo to retrieve all comments related to the given asset along with the users authoring the comments.
+  - Example request: 
+    
+    ```
+    GET http://<host>:8080/mongo?asset=578f5324b1df410001e01da0
+    ```
+  
+  - Example response:
+  
+    ```
+    [
+      {
+        "id": "578f5321b1df410001e01716",
+        "t": "coral_user",
+        "v": 1,
+        "d": {
+          "id": 86,
+          "name": "hskmHIyABE"
+        }
+      },
+      {
+        "id": "578f5321b1df410001e01758",
+        "t": "coral_user",
+        "v": 1,
+        "d": {
+          "id": 147,
+          "name": "AIFXsRBOdv"
+        }
+      },
+      {
+        "id": "578f5339b1df410001e02945",
+        "t": "coral_comment",
+        "v": 1,
+        "d": {
+          "asset_id": 258,
+          "body": "nTFcpRoUEzrMPWSRWjlf",
+          "id": 2740,
+          "user_id": 1382
+        },
+        "rels": [
+          {
+            "n": "context",
+            "t": "coral_asset",
+            "id": "578f5324b1df410001e01da0"
+          },
+          {
+            "n": "author",
+            "t": "coral_user",
+            "id": "578f5324b1df410001e01c2c"
+          }
+        ]
+      },
+      {
+        "id": "578f533eb1df410001e02b73",
+        "t": "coral_comment",
+        "v": 1,
+        "d": {
+          "asset_id": 258,
+          "body": "rEdkZHdlsGOdVpkGdZvJ",
+          "id": 3296,
+          "parent_id": 2003,
+          "user_id": 1458
+        },
+        "rels": [
+          {
+            "n": "context",
+            "t": "coral_asset",
+            "id": "578f5324b1df410001e01da0"
+          },
+          {
+            "n": "author",
+            "t": "coral_user",
+            "id": "578f5324b1df410001e01c73"
+          },
+          {
+            "n": "parent",
+            "t": "coral_comment",
+            "id": "578f5333b1df410001e02665"
+          }
+        ]
+      }
+    ]
     ```
