@@ -1,4 +1,4 @@
-# POC for "Shelf,"  a view engine between sponge and xenia.
+# POC for "Shelf"
 
 The goals of shelf are:
 
