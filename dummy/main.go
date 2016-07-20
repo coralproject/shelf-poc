@@ -16,7 +16,7 @@ var (
 )
 
 const (
-	numWorkers = 2
+	numWorkers = 8
 	numJobs    = 100
 )
 

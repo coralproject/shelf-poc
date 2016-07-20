@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -20,17 +21,14 @@ func sendToSponge(payload []byte, typeIn string) error {
 		return errors.Wrap(err, "Could not create http request")
 	}
 	req.Header.Add("content-type", "application/json")
-	req.Close = true
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "Could not execute POST request to sponge")
 	}
-	defer res.Body.Close()
+	io.Copy(ioutil.Discard, res.Body)
+	res.Body.Close()
 
-	if res.StatusCode != http.StatusOK {
-		return errors.Wrap(err, "Unexpected sponge response")
-	}
 	return nil
 }
 
@@ -40,19 +38,13 @@ func worker(jobsIn <-chan Job, resultsIn chan<- error) {
 	for j := range jobsIn {
 		err := sendToSponge(j.Data, j.Type)
 		if err == io.EOF {
-			time.Sleep(1 * time.Second)
+			time.Sleep(10 * time.Second)
 			err := sendToSponge(j.Data, j.Type)
 			if err == io.EOF {
-				time.Sleep(10 * time.Second)
-				err := sendToSponge(j.Data, j.Type)
-				if err == io.EOF {
-					resultsIn <- err
-				}
+				resultsIn <- err
 			}
-			continue
 		}
 		resultsIn <- err
-		time.Sleep(10 * time.Millisecond)
 	}
 }
 
