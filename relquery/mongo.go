@@ -92,3 +92,26 @@ func retrieveObjectList(ids []string) ([]Item, error) {
 
 	return results, nil
 }
+
+func retrieveCommentsByAsset(assetID string) ([]Item, error) {
+
+	mgoDB, err := db.NewMGO("Mongo", "test")
+	if err != nil {
+		return nil, errors.Wrap(err, "Could not connect to MongoDB")
+	}
+	defer mgoDB.CloseMGO("Mongo")
+
+	var results []Item
+	f := func(c *mgo.Collection) error {
+		return c.Find(bson.M{"t": "coral_comment", "rels": bson.M{"$elemMatch": bson.M{"id": assetID}}}).All(&results)
+	}
+
+	if err := mgoDB.ExecuteMGO("Mongo", "coral_items", f); err != nil {
+		if err == mgo.ErrNotFound {
+			err = ErrNotFound
+		}
+		return nil, errors.Wrap(err, "Could not locate items")
+	}
+
+	return results, nil
+}

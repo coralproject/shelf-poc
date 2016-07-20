@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -77,8 +76,44 @@ func GraphQuery(w http.ResponseWriter, r *http.Request) {
 // using embedded relationships in MongoDB.
 func MongoQuery(w http.ResponseWriter, r *http.Request) {
 
-	//queryvals := r.URL.Query()
-	//assetID := queryvals["userid"][0]
+	// Get the asset ID from the query string.
+	queryvals := r.URL.Query()
+	assetID := queryvals["asset"][0]
 
-	fmt.Fprint(w, "Welcome to this example API\n")
+	// Get the comment items corresponding to the asset.
+	items, err := retrieveCommentsByAsset(assetID)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve comments from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Extract the author IDs from the comments.
+	var authors []string
+	for _, item := range items {
+		for _, rel := range item.Rels {
+			if rel.Type == "coral_user" {
+				authors = append(authors, rel.ID)
+			}
+		}
+	}
+
+	// Get the author items corresponding to the extracted IDs.
+	authorItems, err := retrieveObjectList(authors)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve authors from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Concatenate the comments and authors.
+	items = append(items, authorItems...)
+
+	// Encode the results.
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(items); err != nil {
+		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+	}
+	return
 }
