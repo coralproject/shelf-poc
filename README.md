@@ -21,13 +21,21 @@ This POC mocks out much of this functionality, such that we can evaluate archite
   1. `sponged` - as built from the `item-cayley` branch of `xenia`
   2. MongoDB - note, you may want a separate instance of mongo running for this POC as it will create databases, indices, etc.  Just so it doesn't break anything you are currently using that is dependent on Mongo.
 
-### 1. Generate dummy data
+### 1. Prepare data
 
-1. Build the `dummy` binary by executing `go build` [here](dummy), OR build a Docker image including the binary using the [Makefile](dummy/Makefile).  Note, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
-2. Copy the [dummy.env](dummy/dummy.env) file to `/etc` and modify it according to where `sponged` is installed and how many documents you want to generate.
-3. Run `dummy` (or the Docker image if you built it).  When this executes, it will:
-  - Generate dummy items including assets, comments, and users in the proportions 5%, 80%, and 15%, respectively.
-  - For each of the generated items, send the item to `sponged`, where `sponged` will format, verify, and store the item along with inserting the item and any relevant relationships into the Cayley graph DB.
+If you want to create dummy data for testing:
+
+  1. Build the `dummy` binary by executing `go build` [here](dummy), OR build a Docker image including the binary using the [Makefile](dummy/Makefile).  Note, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
+  2. Copy the [dummy.env](dummy/dummy.env) file to `/etc` and modify it according to where `sponged` is installed and how many documents you want to generate.
+  3. Run `dummy` (or the Docker image if you built it).  When this executes, it will:
+    - Generate dummy items including assets, comments, and users in the proportions 5%, 80%, and 15%, respectively.
+    - For each of the generated items, send the item to `sponged`, where `sponged` will format, verify, and store the item along with inserting the item and any relevant relationships into the Cayley graph DB.
+
+If you want to utilize real world data for testing:
+
+  1. Make sure `sponged` (based on the `item-cayley` branch of xenia) is running.
+  2. Create a script that push assets, comments, and authors to the `sponged` endpoint defined [here](https://github.com/coralproject/xenia/blob/item-cayley/cmd/sponged/routes/routes.go#L108).
+  3. Run your script to import the data.
 
 ### 2. Query the dummy data
 
