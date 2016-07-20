@@ -25,7 +25,7 @@ func getItemsOnAsset(assetID string) ([]string, error) {
 	defer store.Close()
 
 	// Get the related item IDs.
-	it, _ := cayley.StartPath(store, assetID).In("contextualized_with").BuildIterator().Optimize()
+	it, _ := cayley.StartPath(store, assetID).In("contextualized_with").Or(cayley.StartPath(store, assetID).In("contextualized_with").Out("authored_by")).BuildIterator().Optimize()
 	defer it.Close()
 
 	var ids []string
