@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -28,13 +29,29 @@ func sendToSponge(payload []byte, typeIn string) error {
 	if err != nil {
 		return errors.Wrap(err, "Could not execute POST request to sponge")
 	}
-	io.Copy(ioutil.Discard, res.Body)
-	res.Body.Close()
+	defer res.Body.Close()
 
 	// Make sure the data import was successful.
 	if res.StatusCode != http.StatusOK {
 		return errors.Wrap(err, "Received an unexpected response from sponge")
 	}
+
+	// Decode the quads to import into Cayley.
+	var sres SpongeRes
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return errors.Wrap(err, "Could not read response body")
+	}
+	if err = json.Unmarshal(body, &sres); err != nil {
+		return errors.Wrap(err, "Could not unmarshall JSON in response")
+	}
+	for _, quad := range sres.Quads {
+		txMutex.Lock()
+		tx.AddQuad(quad)
+		txCount++
+		txMutex.Unlock()
+	}
+
 	return nil
 }
 

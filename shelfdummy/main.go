@@ -4,7 +4,10 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"sync"
 
+	"github.com/cayleygraph/cayley"
+	"github.com/cayleygraph/cayley/graph"
 	"github.com/pkg/errors"
 )
 
@@ -15,6 +18,9 @@ var (
 	results    chan error
 	numWorkers int
 	numJobs    int
+	tx         *graph.Transaction
+	txMutex    *sync.Mutex
+	txCount    int
 )
 
 func init() {
@@ -65,7 +71,16 @@ func main() {
 	// Make the channels for handling data imports.
 	jobs = make(chan Job, numJobs)
 	results = make(chan error, numJobs)
+	tx = cayley.NewTransaction()
+	txMutex = &sync.Mutex{}
+	txCount = 0
 	handleErrors()
+
+	// Initialize the database
+	if err := graph.InitQuadStore("mongo", "localhost:27017", nil); err != nil {
+		err = errors.Wrap(err, "Could not initialize quad store")
+		log.Println(err)
+	}
 
 	log.Println("Get numbers of dummy items to be generated")
 	numComments, numUsers, numAssets := generateItemNumbers()
@@ -74,6 +89,9 @@ func main() {
 	for w := 1; w <= numWorkers; w++ {
 		go worker(jobs, results)
 	}
+
+	log.Println("Start periodic tranaction processing for Cayley")
+	applyPerTx()
 
 	log.Println("Generate dummy users")
 	if err := generateUsers(numUsers); err != nil {
@@ -87,6 +105,11 @@ func main() {
 
 	log.Println("Generate dummy comments")
 	if err := generateComments(numComments, numUsers, numAssets); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Apply batch cayley transactions")
+	if err := applyTx(); err != nil {
 		log.Fatal(err)
 	}
 

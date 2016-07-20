@@ -1,3 +1,3 @@
 FROM scratch
-ADD dummy /dummy
-CMD ["/dummy"]
+ADD shelfdummy /shelfdummy
+CMD ["/shelfdummy"]

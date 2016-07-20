@@ -1,5 +1,7 @@
 package main
 
+import "github.com/cayleygraph/cayley/quad"
+
 // User is used to encode coral user data.
 type User struct {
 	ID   int    `json:"id"`
@@ -25,4 +27,9 @@ type Comment struct {
 type Job struct {
 	Data []byte
 	Type string
+}
+
+// SpongeRes is used to decode quads in the response from sponge.
+type SpongeRes struct {
+	Quads []quad.Quad `json:"quads"`
 }

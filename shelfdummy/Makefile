@@ -1,10 +1,10 @@
 all: compile docker push
 
 compile:
-		CGO_ENABLED=0 go build -o dummy
+		CGO_ENABLED=0 go build -o shelfdummy
 
 docker:
-		sudo docker build -t dwhitena/dummy .
+		sudo docker build -t dwhitena/shelfdummy .
 
 push:
-		sudo docker push dwhitena/dummy
+		sudo docker push dwhitena/shelfdummy

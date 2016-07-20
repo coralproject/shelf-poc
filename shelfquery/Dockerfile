@@ -1,4 +1,4 @@
 FROM scratch
-ADD relquery /relquery
+ADD shelfquery /shelfquery
 EXPOSE 8080
-CMD ["/relquery"]
+CMD ["/shelfquery"]
