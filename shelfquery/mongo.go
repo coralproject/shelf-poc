@@ -73,6 +73,60 @@ func retrieveRandAsset(num int) (Item, error) {
 	return result, nil
 }
 
+// retrieveRandUser retrieves a random item of type "coral_user" from Mongo.
+func retrieveRandUser(num int) (Item, error) {
+
+	// Create a session copy.
+	mgoDB, err := db.NewMGO("Mongo", "test")
+	if err != nil {
+		return Item{}, errors.Wrap(err, "Could not connect to MongoDB")
+	}
+	defer mgoDB.CloseMGO("Mongo")
+
+	// Define the query.
+	var result Item
+	f := func(c *mgo.Collection) error {
+		return c.Find(bson.M{"t": "coral_user"}).Limit(1).Skip(rand.Intn(num)).One(&result)
+	}
+
+	// Execute the query.
+	if err := mgoDB.ExecuteMGO("Mongo", "coral_items", f); err != nil {
+		if err == mgo.ErrNotFound {
+			err = ErrNotFound
+		}
+		return Item{}, errors.Wrap(err, "Could not locate user")
+	}
+
+	return result, nil
+}
+
+// retrieveRandComment retrieves a random item of type "coral_comment" from Mongo.
+func retrieveRandComment(num int) (Item, error) {
+
+	// Create a session copy.
+	mgoDB, err := db.NewMGO("Mongo", "test")
+	if err != nil {
+		return Item{}, errors.Wrap(err, "Could not connect to MongoDB")
+	}
+	defer mgoDB.CloseMGO("Mongo")
+
+	// Define the query.
+	var result Item
+	f := func(c *mgo.Collection) error {
+		return c.Find(bson.M{"t": "coral_comment"}).Limit(1).Skip(rand.Intn(num)).One(&result)
+	}
+
+	// Execute the query.
+	if err := mgoDB.ExecuteMGO("Mongo", "coral_items", f); err != nil {
+		if err == mgo.ErrNotFound {
+			err = ErrNotFound
+		}
+		return Item{}, errors.Wrap(err, "Could not locate comment")
+	}
+
+	return result, nil
+}
+
 // retrieveObjectList retrieves the items corresponding to the input list of object IDs.
 func retrieveObjectList(ids []string) ([]Item, error) {
 
@@ -120,6 +174,60 @@ func retrieveCommentsByAsset(assetID string) ([]Item, error) {
 	var results []Item
 	f := func(c *mgo.Collection) error {
 		return c.Find(bson.M{"t": "coral_comment", "rels": bson.M{"$elemMatch": bson.M{"id": assetID}}}).All(&results)
+	}
+
+	// Execute the query.
+	if err := mgoDB.ExecuteMGO("Mongo", "coral_items", f); err != nil {
+		if err == mgo.ErrNotFound {
+			err = ErrNotFound
+		}
+		return nil, errors.Wrap(err, "Could not locate items")
+	}
+
+	return results, nil
+}
+
+// retrieveCommentsByUser retrieves comments authored by the given user.
+func retrieveCommentsByUser(userID string) ([]Item, error) {
+
+	// Create a session copy.
+	mgoDB, err := db.NewMGO("Mongo", "test")
+	if err != nil {
+		return nil, errors.Wrap(err, "Could not connect to MongoDB")
+	}
+	defer mgoDB.CloseMGO("Mongo")
+
+	// Form the query.
+	var results []Item
+	f := func(c *mgo.Collection) error {
+		return c.Find(bson.M{"t": "coral_comment", "rels": bson.M{"$elemMatch": bson.M{"id": userID}}}).All(&results)
+	}
+
+	// Execute the query.
+	if err := mgoDB.ExecuteMGO("Mongo", "coral_items", f); err != nil {
+		if err == mgo.ErrNotFound {
+			err = ErrNotFound
+		}
+		return nil, errors.Wrap(err, "Could not locate items")
+	}
+
+	return results, nil
+}
+
+// retrieveCommentsByParents retrieves comments parented by one of the given list of comments.
+func retrieveCommentsByParents(parentIDs []string) ([]Item, error) {
+
+	// Create a session copy.
+	mgoDB, err := db.NewMGO("Mongo", "test")
+	if err != nil {
+		return nil, errors.Wrap(err, "Could not connect to MongoDB")
+	}
+	defer mgoDB.CloseMGO("Mongo")
+
+	// Form the query.
+	var results []Item
+	f := func(c *mgo.Collection) error {
+		return c.Find(bson.M{"t": "coral_comment", "rels": bson.M{"$elemMatch": bson.M{"id": bson.M{"$in": parentIDs}}}}).All(&results)
 	}
 
 	// Execute the query.
