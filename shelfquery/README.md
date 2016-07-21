@@ -21,6 +21,66 @@ This endpoint will retrieve a random asset item from MongoDB, given the total nu
     }
     ```
 
+## GET `/comment?num=<number of comments>` 
+
+This endpoint will retrieve a random comment item from MongoDB, given the total number of comments from which a random sample will be pulled.
+  - Example request: 
+  
+    ```
+    GET http://<host>:8080/comment?num=500
+    ```
+  
+  - Example response:
+  
+    ```
+    {
+      "id": "578fd169b1df410001d43190",
+      "t": "coral_comment",
+      "v": 1,
+      "d": {
+        "asset_id": 3640,
+        "body": "YjjVmUlsdjsuMaRbEpCr",
+        "id": 12736,
+        "user_id": 13340
+      },
+      "rels": [
+        {
+          "n": "context",
+          "t": "coral_asset",
+          "id": "578fd03bb1df410001d3fa80"
+        },
+        {
+          "n": "author",
+          "t": "coral_user",
+          "id": "578fd024b1df410001d3e5cc"
+        }
+      ]
+    }
+    ```
+
+## GET `/user?num=<number of users>` 
+
+This endpoint will retrieve a random user item from MongoDB, given the total number of users from which a random sample will be pulled.
+  - Example request: 
+  
+    ```
+    GET http://<host>:8080/user?num=500
+    ```
+  
+  - Example response:
+  
+    ```
+    {
+      "id": "578fd006b1df410001d3b81f",
+      "t": "coral_user",
+      "v": 1,
+      "d": {
+        "id": 1647,
+        "name": "KsIxvlZayj"
+      }
+    }    
+    ```
+
 ## GET `/graph/singleasset?asset=<asset id>` 
 
 This endpoint will use the graph DB to retrieve all comments related to the given asset along with the users authoring the comments.
