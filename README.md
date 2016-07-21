@@ -26,7 +26,7 @@ This POC mocks out much of this functionality, such that we can evaluate archite
 If you want to create dummy data for testing:
 
   1. Build the `shelfdummy` binary by executing `go build` [here](shelfdummy), OR build a Docker image including the binary using the [Makefile](shelfdummy/Makefile).  Note, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
-  2. Copy the [dummy.env](dummy/shelfdummy.env) file to `/etc` and modify it according to where `sponged` is installed and how many documents you want to generate.
+  2. Define the example environmental variables in [dummy.env](files/dummy.env).  Modify it according to where `sponged` is installed and how many documents you want to generate.
   3. Run `shelfdummy` (or the Docker image if you built it).  When this executes, it will:
     - Generate dummy items including assets, comments, and users in the proportions 5%, 80%, and 15%, respectively.
     - For each of the generated items, send the item to `sponged`, where `sponged` will format, verify, and store the item along with inserting the item and any relevant relationships into the Cayley graph DB.
