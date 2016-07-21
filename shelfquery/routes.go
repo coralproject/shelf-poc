@@ -81,4 +81,28 @@ var routes = Routes{
 		"/mongo/parentcomments",
 		MongoQueryParComments,
 	},
+	Route{
+		"GraphQueryGrandparComments",
+		"GET",
+		"/graph/grandparentcomments",
+		GraphQueryGrandparComments,
+	},
+	Route{
+		"MongoQueryGrandparComments",
+		"GET",
+		"/mongo/grandparentcomments",
+		MongoQueryGrandparComments,
+	},
+	Route{
+		"GraphQueryGrGrandparComments",
+		"GET",
+		"/graph/greatgrandparentcomments",
+		GraphQueryGrGrandparComments,
+	},
+	Route{
+		"MongoQueryGrGrandparComments",
+		"GET",
+		"/mongo/greatgrandparentcomments",
+		MongoQueryGrGrandparComments,
+	},
 }

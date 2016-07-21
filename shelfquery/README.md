@@ -501,4 +501,184 @@ This endpoint will use mongo only to retrieve all comments parented by comments 
     ]
     ```
 
+## GET `/graph/grandparentcomments?comment=<comments id>` 
+
+This endpoint will use the graph DB to retrieve all comments grandparented by comments authored by the author of the parent of the provided comment.
+  - Example request: 
+    
+    ```
+    GET http://<host>:8080/graph/grandparentcomments?comment=578f5324b1df410001e01da0
+    ```
+  
+  - Example response:
+  
+    ```
+    [
+      {
+        "id": "578f533eb1df410001e02b73",
+        "t": "coral_comment",
+        "v": 1,
+        "d": {
+          "asset_id": 258,
+          "body": "rEdkZHdlsGOdVpkGdZvJ",
+          "id": 3296,
+          "parent_id": 2003,
+          "user_id": 1458
+        },
+        "rels": [
+          {
+            "n": "context",
+            "t": "coral_asset",
+            "id": "578f5324b1df410001e01da0"
+          },
+          {
+            "n": "author",
+            "t": "coral_user",
+            "id": "578f5324b1df410001e01c73"
+          },
+          {
+            "n": "parent",
+            "t": "coral_comment",
+            "id": "578f5333b1df410001e02665"
+          }
+        ]
+      }
+    ]
+    ```
+
+## GET `/mongo/grandparentcomments?comment=<comments id>` 
+
+This endpoint will use mongo only to retrieve all comments grandparented by comments authored by the author of the parent of the provided comment.
+  - Example request: 
+    
+    ```
+    GET http://<host>:8080/mongo/grandparentcomments?comment=578f5324b1df410001e01da0
+    ```
+  
+  - Example response:
+  
+    ```
+    [
+      {
+        "id": "578f533eb1df410001e02b73",
+        "t": "coral_comment",
+        "v": 1,
+        "d": {
+          "asset_id": 258,
+          "body": "rEdkZHdlsGOdVpkGdZvJ",
+          "id": 3296,
+          "parent_id": 2003,
+          "user_id": 1458
+        },
+        "rels": [
+          {
+            "n": "context",
+            "t": "coral_asset",
+            "id": "578f5324b1df410001e01da0"
+          },
+          {
+            "n": "author",
+            "t": "coral_user",
+            "id": "578f5324b1df410001e01c73"
+          },
+          {
+            "n": "parent",
+            "t": "coral_comment",
+            "id": "578f5333b1df410001e02665"
+          }
+        ]
+      }
+    ]
+    ```
+
+## GET `/graph/greatgrandparentcomments?comment=<comments id>` 
+
+This endpoint will use the graph DB to retrieve all comments great-grandparented by comments authored by the author of the parent of the provided comment.
+  - Example request: 
+    
+    ```
+    GET http://<host>:8080/graph/greatgrandparentcomments?comment=578f5324b1df410001e01da0
+    ```
+  
+  - Example response:
+  
+    ```
+    [
+      {
+        "id": "578f533eb1df410001e02b73",
+        "t": "coral_comment",
+        "v": 1,
+        "d": {
+          "asset_id": 258,
+          "body": "rEdkZHdlsGOdVpkGdZvJ",
+          "id": 3296,
+          "parent_id": 2003,
+          "user_id": 1458
+        },
+        "rels": [
+          {
+            "n": "context",
+            "t": "coral_asset",
+            "id": "578f5324b1df410001e01da0"
+          },
+          {
+            "n": "author",
+            "t": "coral_user",
+            "id": "578f5324b1df410001e01c73"
+          },
+          {
+            "n": "parent",
+            "t": "coral_comment",
+            "id": "578f5333b1df410001e02665"
+          }
+        ]
+      }
+    ]
+    ```
+
+## GET `/mongo/greatgrandparentcomments?comment=<comments id>` 
+
+This endpoint will use mongo only to retrieve all comments great-grandparented by comments authored by the author of the parent of the provided comment.
+  - Example request: 
+    
+    ```
+    GET http://<host>:8080/mongo/greatgrandparentcomments?comment=578f5324b1df410001e01da0
+    ```
+  
+  - Example response:
+  
+    ```
+    [
+      {
+        "id": "578f533eb1df410001e02b73",
+        "t": "coral_comment",
+        "v": 1,
+        "d": {
+          "asset_id": 258,
+          "body": "rEdkZHdlsGOdVpkGdZvJ",
+          "id": 3296,
+          "parent_id": 2003,
+          "user_id": 1458
+        },
+        "rels": [
+          {
+            "n": "context",
+            "t": "coral_asset",
+            "id": "578f5324b1df410001e01da0"
+          },
+          {
+            "n": "author",
+            "t": "coral_user",
+            "id": "578f5324b1df410001e01c73"
+          },
+          {
+            "n": "parent",
+            "t": "coral_comment",
+            "id": "578f5333b1df410001e02665"
+          }
+        ]
+      }
+    ]
+    ```
+
 

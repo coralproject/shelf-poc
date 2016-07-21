@@ -231,6 +231,72 @@ func GraphQueryParComments(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// GraphQueryGrandparComments returns all comment items grandparented by comments authored by
+// the author of the parent comment of the comment provided.
+func GraphQueryGrandparComments(w http.ResponseWriter, r *http.Request) {
+
+	// Get the asset ID from the query string.
+	queryvals := r.URL.Query()
+	commentID := queryvals["comment"][0]
+
+	// Query cayley to get the item IDs related to this asset ID.
+	itemIDs, err := getGrandCommentsOnPar(commentID)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve item IDs from Cayley.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Query MongoDB to retrieve the corresponding documents.
+	items, err := retrieveObjectList(itemIDs)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve items from Mongo.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Encode the results.
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(items); err != nil {
+		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+	}
+	return
+}
+
+// GraphQueryGrGrandparComments returns all comment items great-grandparented by
+// comments authored by the author of the parent comment of the comment provided.
+func GraphQueryGrGrandparComments(w http.ResponseWriter, r *http.Request) {
+
+	// Get the asset ID from the query string.
+	queryvals := r.URL.Query()
+	commentID := queryvals["comment"][0]
+
+	// Query cayley to get the item IDs related to this asset ID.
+	itemIDs, err := getGrGrandCommentsOnPar(commentID)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve item IDs from Cayley.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Query MongoDB to retrieve the corresponding documents.
+	items, err := retrieveObjectList(itemIDs)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve items from Mongo.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Encode the results.
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(items); err != nil {
+		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+	}
+	return
+}
+
 // MongoQueryUserAssets returns asset items commented on by the given user
 // using embedded relationships in MongoDB.
 func MongoQueryUserAssets(w http.ResponseWriter, r *http.Request) {
@@ -372,6 +438,198 @@ func MongoQueryParComments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(children); err != nil {
+		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+	}
+	return
+}
+
+// MongoQueryGrandparComments returns comment items grandparented by comments authored
+// by the author of the parent of the provided comment.
+func MongoQueryGrandparComments(w http.ResponseWriter, r *http.Request) {
+
+	// Get the asset ID from the query string.
+	queryvals := r.URL.Query()
+	commentID := queryvals["comment"][0]
+
+	// Get the comment.
+	comments, err := retrieveObjectList([]string{commentID})
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve comment from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Extract the parent comment ID.
+	var parentID string
+	for _, rel := range comments[0].Rels {
+		if rel.Name == "parent" {
+			parentID = rel.ID
+		}
+	}
+	if parentID == "" {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode([]Item{}); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
+	}
+
+	// Get the parent comment.
+	comments, err = retrieveObjectList([]string{parentID})
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve comment from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Extract the author.
+	var authorID string
+	for _, rel := range comments[0].Rels {
+		if rel.Name == "author" {
+			authorID = rel.ID
+		}
+	}
+
+	// Get all the comments authored by that author.
+	comments, err = retrieveCommentsByUser(authorID)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve comment by user from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Extract the IDs from the comments.
+	var commentIDs []string
+	for _, comment := range comments {
+		commentIDs = append(commentIDs, comment.ID.Hex())
+	}
+
+	// Get any child comments parented by these comment IDs.
+	children, err := retrieveCommentsByParents(commentIDs)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve children by parents from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	commentIDs = []string{}
+	for _, comment := range children {
+		commentIDs = append(commentIDs, comment.ID.Hex())
+	}
+
+	// Get any child comments parented by these comment IDs.
+	grandchildren, err := retrieveCommentsByParents(commentIDs)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve children by parents from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Encode the results.
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(grandchildren); err != nil {
+		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+	}
+	return
+}
+
+// MongoQueryGrGrandparComments returns comment items great-grandparented by comments authored
+// by the author of the parent of the provided comment.
+func MongoQueryGrGrandparComments(w http.ResponseWriter, r *http.Request) {
+
+	// Get the asset ID from the query string.
+	queryvals := r.URL.Query()
+	commentID := queryvals["comment"][0]
+
+	// Get the comment.
+	comments, err := retrieveObjectList([]string{commentID})
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve comment from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Extract the parent comment ID.
+	var parentID string
+	for _, rel := range comments[0].Rels {
+		if rel.Name == "parent" {
+			parentID = rel.ID
+		}
+	}
+	if parentID == "" {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode([]Item{}); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
+	}
+
+	// Get the parent comment.
+	comments, err = retrieveObjectList([]string{parentID})
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve comment from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Extract the author.
+	var authorID string
+	for _, rel := range comments[0].Rels {
+		if rel.Name == "author" {
+			authorID = rel.ID
+		}
+	}
+
+	// Get all the comments authored by that author.
+	comments, err = retrieveCommentsByUser(authorID)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve comment by user from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Extract the IDs from the comments.
+	var commentIDs []string
+	for _, comment := range comments {
+		commentIDs = append(commentIDs, comment.ID.Hex())
+	}
+
+	// Get any child comments parented by these comment IDs.
+	children, err := retrieveCommentsByParents(commentIDs)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve children by parents from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	commentIDs = []string{}
+	for _, comment := range children {
+		commentIDs = append(commentIDs, comment.ID.Hex())
+	}
+
+	// Get any child comments parented by these comment IDs.
+	grandchildren, err := retrieveCommentsByParents(commentIDs)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve children by parents from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	commentIDs = []string{}
+	for _, comment := range grandchildren {
+		commentIDs = append(commentIDs, comment.ID.Hex())
+	}
+
+	// Get any child comments parented by these comment IDs.
+	greatgrandchildren, err := retrieveCommentsByParents(commentIDs)
+	if err != nil {
+		err = errors.Wrap(err, "Could not retrieve children by parents from MongoDB.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Encode the results.
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(greatgrandchildren); err != nil {
 		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 	}
 	return
