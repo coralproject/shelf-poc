@@ -1,10 +1,10 @@
 all: compile docker push
 
 compile:
-		CGO_ENABLED=0 go build -o relquery
+		CGO_ENABLED=0 go build -o shelfquery
 
 docker:
-		sudo docker build -t dwhitena/relquery .
+		sudo docker build -t dwhitena/shelfquery .
 
 push:
-		sudo docker push dwhitena/relquery
+		sudo docker push dwhitena/shelfquery
