@@ -394,6 +394,7 @@ func MongoQueryParComments(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode([]Item{}); err != nil {
 			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 		}
+		return
 	}
 
 	// Get the parent comment.
@@ -472,6 +473,7 @@ func MongoQueryGrandparComments(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode([]Item{}); err != nil {
 			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 		}
+		return
 	}
 
 	// Get the parent comment.
@@ -509,6 +511,14 @@ func MongoQueryGrandparComments(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		err = errors.Wrap(err, "Could not retrieve children by parents from MongoDB.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if len(children) == 0 {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode([]Item{}); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
 		return
 	}
 	commentIDs = []string{}
@@ -562,6 +572,7 @@ func MongoQueryGrGrandparComments(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode([]Item{}); err != nil {
 			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 		}
+		return
 	}
 
 	// Get the parent comment.
@@ -601,6 +612,14 @@ func MongoQueryGrGrandparComments(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if len(children) == 0 {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode([]Item{}); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
+		return
+	}
 	commentIDs = []string{}
 	for _, comment := range children {
 		commentIDs = append(commentIDs, comment.ID.Hex())
@@ -611,6 +630,14 @@ func MongoQueryGrGrandparComments(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		err = errors.Wrap(err, "Could not retrieve children by parents from MongoDB.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if len(grandchildren) == 0 {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode([]Item{}); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
 		return
 	}
 	commentIDs = []string{}
