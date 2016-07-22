@@ -10,7 +10,8 @@ This POC mocks out much of this functionality, such that we can evaluate archite
 
 - Data importing/ingestion using a branch of `xenia` ([item-cayley](https://github.com/coralproject/xenia/tree/item-cayley)) with a modified internal `item` package and `sponged` cmd.
 - Dummy data and relationship generation using the `shelfdummy` program included [here](shelfdummy).
-- Querying based on relationships using the `shelfquery` web server included [here](shelfquery).
+- View generation based on relationships using the `shelfquery` web server included [here](shelfquery).
+- Stats collection for views using the `shelfstats` script includes [here](shelfstats).
 
 **Disclaimer** - The code in this repo is meant for evaluation only and should not be utilized in any production systems.  After evaluating functionality with this POC, actual shelf functionality will be implemented as part of the xenia repo.
 
@@ -37,9 +38,15 @@ If you want to utilize real world data for testing:
   2. Create a script that push assets, comments, and authors to the `sponged` endpoint defined [here](https://github.com/coralproject/xenia/blob/item-cayley/cmd/sponged/routes/routes.go#L108).
   3. Run your script to import the data.
 
-### 2. Query the dummy data
+### 2. Generate views (query the dummy data)
 
 1. Build the `shelfquery` binary by executing `go build` [here](shelfquery), OR build a Docker image including the binary using the [Makefile](shelfquery/Makefile).  Again, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
 2. Run `shelfquery`.
 
 You will now be able to make use of the view endpoints described [here](shelfquery/README.md).
+
+### 3. Gather stats
+
+1. Build the `shelfstats` binary by executing `go build` [here](shelfstats).
+2. Set [these](files/stats.env) environmental vars.
+3. Run `shelfstats`.  This will output stats for all available queries to standard out.
