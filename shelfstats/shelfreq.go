@@ -38,15 +38,8 @@ func getAsset() (string, error) {
 	numAssets := numDocs / 20
 	url := fmt.Sprintf("http://%s:8080/asset?num=%d", shelfHost, numAssets)
 
-	// Generate the request.
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return "", errors.Wrap(err, "Could not generate request to GET asset")
-	}
-	req.Header.Add("content-type", "application/json")
-
 	// Send the request.
-	res, err := http.DefaultClient.Do(req)
+	res, err := http.Get(url)
 	if err != nil {
 		return "", errors.Wrap(err, "Could not execute GET asset request")
 	}
@@ -67,15 +60,8 @@ func getComment() (string, error) {
 	numComments := (numDocs * 4) / 5
 	url := fmt.Sprintf("http://%s:8080/comment?num=%d", shelfHost, numComments)
 
-	// Generate the request.
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return "", errors.Wrap(err, "Could not generate request to GET comment")
-	}
-	req.Header.Add("content-type", "application/json")
-
 	// Send the request.
-	res, err := http.DefaultClient.Do(req)
+	res, err := http.Get(url)
 	if err != nil {
 		return "", errors.Wrap(err, "Could not execute GET comment request")
 	}
@@ -96,15 +82,8 @@ func getUser() (string, error) {
 	numUsers := (numDocs * 3) / 20
 	url := fmt.Sprintf("http://%s:8080/user?num=%d", shelfHost, numUsers)
 
-	// Generate the request.
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return "", errors.Wrap(err, "Could not generate request to GET user")
-	}
-	req.Header.Add("content-type", "application/json")
-
 	// Send the request.
-	res, err := http.DefaultClient.Do(req)
+	res, err := http.Get(url)
 	if err != nil {
 		return "", errors.Wrap(err, "Could not execute GET user request")
 	}
