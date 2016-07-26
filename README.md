@@ -50,3 +50,5 @@ You will now be able to make use of the view endpoints described [here](shelfque
 1. Build the `shelfstats` binary by executing `go build` [here](shelfstats).
 2. Set [these](files/stats.env) environmental vars.
 3. Run `shelfstats`.  This will output stats (see example [here](shelfstats/README.md)) for all available queries to standard out.
+
+What's next? Find out more in our <a href="https://docs.google.com/document/d/1YEqoy0tbY7mknWxrINClEs9RV3b3nbD2QOvJw9Jo8lE/edit?usp=sharing">product document (work in progress.)</a>
