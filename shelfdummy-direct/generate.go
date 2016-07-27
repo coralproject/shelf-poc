@@ -118,6 +118,14 @@ func generateComments(numComments, numUsers, numAssets int) error {
 			Data:    data,
 		}
 
+		// Keep the comment ID in memory, in some cases (randomly).
+		switch {
+		case len(commentIDs) < 100:
+			commentIDs = append(commentIDs, item.ID)
+		case len(commentIDs) >= 100:
+			commentIDs[rand.Intn(100)] = item.ID
+		}
+
 		// Generate relationships.
 		var quads []quad.Quad
 		quads = append(quads, cayley.Quad(item.ID.Hex(), "is_type", "coral_comment", ""))
@@ -129,6 +137,14 @@ func generateComments(numComments, numUsers, numAssets int) error {
 		// Add authored by relationship.
 		authorID := userIDs[rand.Intn((numDoc*3)/20)]
 		quads = append(quads, cayley.Quad(item.ID.Hex(), "authored_by", authorID.Hex(), ""))
+
+		// Get parent relationship if necessary.
+		if rand.Intn(2) == 1 {
+			if len(commentIDs) > 2 {
+				commentID := commentIDs[rand.Intn(len(commentIDs))]
+				quads = append(quads, cayley.Quad(item.ID.Hex(), "parented_by", commentID.Hex(), ""))
+			}
+		}
 
 		// Send the job to the workers.
 		job := Job{

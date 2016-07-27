@@ -23,10 +23,9 @@ var (
 	results    chan error
 	numWorkers int
 	numJobs    int
-	docCount   map[string]int
-	docMutex   *sync.Mutex
 	assetIDs   []bson.ObjectId
 	userIDs    []bson.ObjectId
+	commentIDs []bson.ObjectId
 	tx         *graph.Transaction
 	txMutex    *sync.Mutex
 )
@@ -79,10 +78,9 @@ func main() {
 	// Make the channels for handling data imports.
 	jobs = make(chan Job, numJobs)
 	results = make(chan error, numJobs)
-	docCount = make(map[string]int)
-	docMutex = &sync.Mutex{}
 	assetIDs = []bson.ObjectId{}
 	userIDs = []bson.ObjectId{}
+	commentIDs = []bson.ObjectId{}
 	tx = cayley.NewTransaction()
 	txMutex = &sync.Mutex{}
 	handleErrors()
