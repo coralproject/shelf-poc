@@ -5,7 +5,12 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"sync"
+	"time"
 
+	"gopkg.in/mgo.v2/bson"
+
+	"github.com/cayleygraph/cayley"
 	"github.com/cayleygraph/cayley/graph"
 	_ "github.com/cayleygraph/cayley/graph/mongo"
 	"github.com/pkg/errors"
@@ -18,6 +23,12 @@ var (
 	results    chan error
 	numWorkers int
 	numJobs    int
+	docCount   map[string]int
+	docMutex   *sync.Mutex
+	assetIDs   []bson.ObjectId
+	userIDs    []bson.ObjectId
+	tx         *graph.Transaction
+	txMutex    *sync.Mutex
 )
 
 func init() {
@@ -68,6 +79,12 @@ func main() {
 	// Make the channels for handling data imports.
 	jobs = make(chan Job, numJobs)
 	results = make(chan error, numJobs)
+	docCount = make(map[string]int)
+	docMutex = &sync.Mutex{}
+	assetIDs = []bson.ObjectId{}
+	userIDs = []bson.ObjectId{}
+	tx = cayley.NewTransaction()
+	txMutex = &sync.Mutex{}
 	handleErrors()
 
 	// Check connection to Mongo.
@@ -104,10 +121,31 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Wait for assets and users to be created.
+	for len(jobs) > 0 {
+		time.Sleep(1 * time.Millisecond)
+	}
+
 	log.Println("Generate dummy comments")
 	if err := generateComments(numComments, numUsers, numAssets); err != nil {
 		log.Fatal(err)
 	}
+
+	// Wait for comments to be created.
+	for len(jobs) > 0 {
+		time.Sleep(1 * time.Millisecond)
+	}
+
+	log.Println("Apply Cayley transaction")
+	store, err := cayley.NewGraph("mongo", mongoHostPort, nil)
+	if err != nil {
+		log.Fatal(errors.Wrap(err, "Could not open connection to Cayley"))
+	}
+	txMutex.Lock()
+	if err := store.ApplyTransaction(tx); err != nil {
+		log.Fatal(errors.Wrap(err, "Could not execute transaction"))
+	}
+	txMutex.Unlock()
 
 	close(jobs)
 }

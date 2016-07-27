@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/cayleygraph/cayley/graph"
+	"github.com/cayleygraph/cayley/quad"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -22,7 +22,7 @@ type ItemData struct {
 
 // Job is used to encode data to be sent to sponge.
 type Job struct {
-	Data Item
-	Type string
-	Tx   *graph.Transaction
+	Data  Item
+	Type  string
+	Quads []quad.Quad
 }

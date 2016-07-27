@@ -4,9 +4,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/ardanlabs/kit/db"
 	"github.com/cayleygraph/cayley"
-	"github.com/pkg/errors"
+	"github.com/cayleygraph/cayley/quad"
 
 	"gopkg.in/mgo.v2/bson"
 )
@@ -47,14 +46,17 @@ func generateUsers(num int) error {
 		}
 
 		// Generate relationships.
-		t := cayley.NewTransaction()
-		t.AddQuad(cayley.Quad(item.ID.Hex(), "is_type", "coral_user", ""))
+		var quads []quad.Quad
+		quads = append(quads, cayley.Quad(item.ID.Hex(), "is_type", "coral_user", ""))
+
+		// Keep the object ID in memory.
+		userIDs = append(userIDs, item.ID)
 
 		// Send the job to the workers.
 		job := Job{
-			Data: item,
-			Type: "user",
-			Tx:   t,
+			Data:  item,
+			Type:  "user",
+			Quads: quads,
 		}
 		jobs <- job
 		currentNum++
@@ -79,15 +81,18 @@ func generateAssets(num int) error {
 			Data:    data,
 		}
 
+		// Keep the object ID in memory.
+		assetIDs = append(assetIDs, item.ID)
+
 		// Generate relationships.
-		t := cayley.NewTransaction()
-		t.AddQuad(cayley.Quad(item.ID.Hex(), "is_type", "coral_asset", ""))
+		var quads []quad.Quad
+		quads = append(quads, cayley.Quad(item.ID.Hex(), "is_type", "coral_asset", ""))
 
 		// Send the job to the workers.
 		job := Job{
-			Data: item,
-			Type: "asset",
-			Tx:   t,
+			Data:  item,
+			Type:  "asset",
+			Quads: quads,
 		}
 		jobs <- job
 		currentNum++
@@ -114,42 +119,22 @@ func generateComments(numComments, numUsers, numAssets int) error {
 		}
 
 		// Generate relationships.
-		t := cayley.NewTransaction()
-		mgoDB, err := db.NewMGO("Mongo", "test")
-		if err != nil {
-			return errors.Wrap(err, "Could not connect to MongoDB")
-		}
-		t.AddQuad(cayley.Quad(item.ID.Hex(), "is_type", "coral_comment", ""))
+		var quads []quad.Quad
+		quads = append(quads, cayley.Quad(item.ID.Hex(), "is_type", "coral_comment", ""))
 
 		// Add contextualized with relationship.
-		asset, err := retrieveRandAsset(numDoc/20, mgoDB)
-		if err != nil {
-			results <- errors.Wrap(err, "Could not retrieve rand. asset")
-		}
-		t.AddQuad(cayley.Quad(item.ID.Hex(), "contextualized_with", asset.ID.Hex(), ""))
+		assetID := assetIDs[rand.Intn(numDoc/20)]
+		quads = append(quads, cayley.Quad(item.ID.Hex(), "contextualized_with", assetID.Hex(), ""))
 
 		// Add authored by relationship.
-		author, err := retrieveRandUser((numDoc*3)/20, mgoDB)
-		if err != nil {
-			results <- errors.Wrap(err, "Could not retrieve rand. author")
-		}
-		t.AddQuad(cayley.Quad(item.ID.Hex(), "authored_by", author.ID.Hex(), ""))
-
-		// Add parented by relationship.
-		if rand.Intn(2) == 1 {
-			parent, err := retrieveRandComment(currentNum, mgoDB)
-			if err != nil {
-				results <- errors.Wrap(err, "Could not retrieve rand. comment")
-			}
-			t.AddQuad(cayley.Quad(item.ID.Hex(), "parented_by", parent.ID.Hex(), ""))
-		}
-		mgoDB.CloseMGO("Mongo")
+		authorID := userIDs[rand.Intn((numDoc*3)/20)]
+		quads = append(quads, cayley.Quad(item.ID.Hex(), "authored_by", authorID.Hex(), ""))
 
 		// Send the job to the workers.
 		job := Job{
-			Data: item,
-			Type: "comment",
-			Tx:   t,
+			Data:  item,
+			Type:  "comment",
+			Quads: quads,
 		}
 		jobs <- job
 		currentNum++

@@ -1,17 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"math/rand"
+	"time"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/ardanlabs/kit/db"
 	"github.com/cayleygraph/cayley"
-	"github.com/cayleygraph/cayley/graph"
 	_ "github.com/cayleygraph/cayley/graph/mongo"
+	"github.com/cayleygraph/cayley/quad"
 	"github.com/pkg/errors"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 // sendToMongo stores an item in Mongo.
 func sendToMongo(item Item) error {
@@ -37,22 +42,29 @@ func sendToMongo(item Item) error {
 	return nil
 }
 
-// sendToCayley imports relationships into Cayley.
-func sendToCayley(tx *graph.Transaction) error {
+// parentQuad returns a parent comment randomly.
+func parentQuad(job Job) (quad.Quad, error) {
 
-	// Get the connection to Cayley.
-	mongoHostPort := fmt.Sprintf("%s:27017", mongoHost)
-	store, err := cayley.NewGraph("mongo", mongoHostPort, nil)
-	if err != nil {
-		return errors.Wrap(err, "Could not open and use the Cayley DB")
+	// Get parent relationship if necessary.
+	if rand.Intn(2) == 1 && job.Type == "comment" {
+		docMutex.Lock()
+		commentCount := docCount["comment"]
+		docMutex.Unlock()
+		if commentCount > 2 {
+			mgoDB, err := db.NewMGO("Mongo", "test")
+			if err != nil {
+				return quad.Quad{}, errors.Wrap(err, "Could not connect to MongoDB")
+			}
+			parent, err := retrieveRandComment(commentCount, mgoDB)
+			if err != nil {
+				results <- errors.Wrap(err, "Could not retrieve rand. comment")
+			}
+			mgoDB.CloseMGO("Mongo")
+			return cayley.Quad(job.Data.ID.Hex(), "parented_by", parent.ID.Hex(), ""), nil
+		}
 	}
-	defer store.Close()
 
-	// Apply all the transactions that we have accumulated.
-	if err := store.ApplyTransaction(tx); err != nil {
-		return errors.Wrap(err, "Could not execute transaction")
-	}
-	return nil
+	return quad.Quad{}, nil
 }
 
 // worker processes a job on the jobs channel and publishes the result to the
@@ -62,9 +74,18 @@ func worker(jobsIn <-chan Job, resultsIn chan<- error) {
 		if err := sendToMongo(j.Data); err != nil {
 			resultsIn <- err
 		}
-		if err := sendToCayley(j.Tx); err != nil {
+		additionalQuad, err := parentQuad(j)
+		if err != nil {
 			resultsIn <- err
 		}
+		if additionalQuad != (quad.Quad{}) {
+			txMutex.Lock()
+			tx.AddQuad(additionalQuad)
+			txMutex.Unlock()
+		}
+		docMutex.Lock()
+		docCount[j.Type]++
+		docMutex.Unlock()
 	}
 }
 
