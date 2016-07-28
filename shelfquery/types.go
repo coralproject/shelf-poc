@@ -21,8 +21,21 @@ type Rel struct {
 	ID   string `bson:"id" json:"id"` // Id of target
 }
 
+// FillRel holds a Rel that needs to be embedded in an item.
+type FillRel struct {
+	ID           bson.ObjectId
+	Collection   string
+	Relationship Rel
+}
+
 // jsonErr is a custom error type for http responses.
 type jsonErr struct {
 	Code int    `json:"code"`
 	Text string `json:"text"`
+}
+
+// CollectionOut encodes saved view information.
+type CollectionOut struct {
+	Number     int    `json:"number_of_results"`
+	Collection string `json:"output_collection"`
 }

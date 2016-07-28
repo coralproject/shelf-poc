@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/cayleygraph/cayley"
 	"github.com/cayleygraph/cayley/quad"
 
 	"gopkg.in/mgo.v2/bson"
@@ -47,7 +46,7 @@ func generateUsers(num int) error {
 
 		// Generate relationships.
 		var quads []quad.Quad
-		quads = append(quads, cayley.Quad(item.ID.Hex(), "is_type", "coral_user", ""))
+		quads = append(quads, quad.Make(item.ID.Hex(), "is_type", "coral_user", ""))
 
 		// Keep the object ID in memory.
 		userIDs = append(userIDs, item.ID)
@@ -86,7 +85,7 @@ func generateAssets(num int) error {
 
 		// Generate relationships.
 		var quads []quad.Quad
-		quads = append(quads, cayley.Quad(item.ID.Hex(), "is_type", "coral_asset", ""))
+		quads = append(quads, quad.Make(item.ID.Hex(), "is_type", "coral_asset", ""))
 
 		// Send the job to the workers.
 		job := Job{
@@ -128,21 +127,21 @@ func generateComments(numComments, numUsers, numAssets int) error {
 
 		// Generate relationships.
 		var quads []quad.Quad
-		quads = append(quads, cayley.Quad(item.ID.Hex(), "is_type", "coral_comment", ""))
+		quads = append(quads, quad.Make(item.ID.Hex(), "is_type", "coral_comment", ""))
 
 		// Add contextualized with relationship.
 		assetID := assetIDs[rand.Intn(numDoc/20)]
-		quads = append(quads, cayley.Quad(item.ID.Hex(), "contextualized_with", assetID.Hex(), ""))
+		quads = append(quads, quad.Make(item.ID.Hex(), "contextualized_with", assetID.Hex(), ""))
 
 		// Add authored by relationship.
 		authorID := userIDs[rand.Intn((numDoc*3)/20)]
-		quads = append(quads, cayley.Quad(item.ID.Hex(), "authored_by", authorID.Hex(), ""))
+		quads = append(quads, quad.Make(authorID.Hex(), "authored", item.ID.Hex(), ""))
 
 		// Get parent relationship if necessary.
 		if rand.Intn(2) == 1 {
 			if len(commentIDs) > 2 {
 				commentID := commentIDs[rand.Intn(len(commentIDs))]
-				quads = append(quads, cayley.Quad(item.ID.Hex(), "parented_by", commentID.Hex(), ""))
+				quads = append(quads, quad.Make(item.ID.Hex(), "parented_by", commentID.Hex(), ""))
 			}
 		}
 
