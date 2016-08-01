@@ -81,13 +81,13 @@ This endpoint will retrieve a random user item from MongoDB, given the total num
     }    
     ```
 
-## GET `/graph/singleasset?asset=<asset id>` 
+## GET `/graph/singleasset?asset=<asset id>&save=<true/false>` 
 
 This endpoint will use the graph DB to retrieve all comments related to the given asset along with the users authoring the comments.
-  - Example request: 
+  - Example request, with items returned in the response: 
     
     ```
-    GET http://<host>:8080/graph/singleasset?asset=578f5324b1df410001e01da0
+    GET http://<host>:8080/graph/singleasset?asset=578f5324b1df410001e01da0&save=false
     ```
   
   - Example response:
@@ -165,6 +165,20 @@ This endpoint will use the graph DB to retrieve all comments related to the give
         ]
       }
     ]
+    ```
+  - Example request, with items saved to a Mongo collection: 
+    
+    ```
+    GET http://<host>:8080/graph/singleasset?asset=578f5324b1df410001e01da0&save=true
+    ```
+  
+  - Example response:
+  
+    ```
+    {
+      "number_of_results": 3,
+      "output_collection": "view1e13168b482846e0827d6c41cc9224f9"
+    }    
     ```
 
 ## GET `/mongo/singleasset?asset=<asset id>` 
@@ -253,13 +267,13 @@ This endpoint will use only mongo to retrieve all comments related to the given 
     ]
     ```
 
-## GET `/graph/userassets?user=<user id>` 
+## GET `/graph/userassets?user=<user id>&save=<true/false>` 
 
 This endpoint will use the graph DB to retrieve all assets commented on by a given user.
-  - Example request: 
+  - Example request, opting to return the items in the response: 
     
     ```
-    GET http://<host>:8080/graph/userassets?user=578f5324b1df410001e01da0
+    GET http://<host>:8080/graph/userassets?user=578f5324b1df410001e01da0&save=false
     ```
   
   - Example response:
@@ -285,6 +299,20 @@ This endpoint will use the graph DB to retrieve all assets commented on by a giv
         }
       }
     ]
+    ```
+  - Example request, with items saved to a Mongo collection: 
+    
+    ```
+    GET http://<host>:8080/graph/userassets?user=578f5324b1df410001e01da0&save=true
+    ```
+  
+  - Example response:
+  
+    ```
+    {
+      "number_of_results": 3,
+      "output_collection": "view1e13168b482846e0827d6c41cc9224f9"
+    }    
     ```
 
 ## GET `/mongo/userassets?user=<user id>` 
@@ -321,13 +349,13 @@ This endpoint will use mongo DB only to retrieve all assets commented on by a gi
     ]
     ```
 
-## GET `/graph/usercomments?user=<user id>` 
+## GET `/graph/usercomments?user=<user id>&save=<true/false>` 
 
 This endpoint will use the graph DB to retrieve all comments authored by the given user.
-  - Example request: 
+  - Example request, opting to return the items in the response: 
     
     ```
-    GET http://<host>:8080/graph/usercomments?user=578f5324b1df410001e01da0
+    GET http://<host>:8080/graph/usercomments?user=578f5324b1df410001e01da0&save=false
     ```
   
   - Example response:
@@ -365,6 +393,21 @@ This endpoint will use the graph DB to retrieve all comments authored by the giv
       }
     ]
     ```
+  - Example request, with items saved to a Mongo collection: 
+    
+    ```
+    GET http://<host>:8080/graph/usercomments?user=578f5324b1df410001e01da0&save=true
+    ```
+  
+  - Example response:
+  
+    ```
+    {
+      "number_of_results": 3,
+      "output_collection": "view1e13168b482846e0827d6c41cc9224f9"
+    }    
+    ```
+
 
 ## GET `/mongo/usercomments?user=<user id>` 
 
@@ -411,13 +454,13 @@ This endpoint will use mongo only to retrieve all comments authored by the given
     ]
     ```
 
-## GET `/graph/parentcomments?comment=<comments id>` 
+## GET `/graph/parentcomments?comment=<comments id>&save=<true/false>` 
 
 This endpoint will use the graph DB to retrieve all comments parented by comments authored by the author of the parent of the provided comment.
-  - Example request: 
+  - Example request, opting to return the items in the response: 
     
     ```
-    GET http://<host>:8080/graph/parentcomments?comment=578f5324b1df410001e01da0
+    GET http://<host>:8080/graph/parentcomments?comment=578f5324b1df410001e01da0&save=false
     ```
   
   - Example response:
@@ -455,6 +498,21 @@ This endpoint will use the graph DB to retrieve all comments parented by comment
       }
     ]
     ```
+  - Example request, with items saved to a Mongo collection: 
+    
+    ```
+    GET http://<host>:8080/graph/parentcomments?comment=578f5324b1df410001e01da0&save=true
+    ```
+  
+  - Example response:
+  
+    ```
+    {
+      "number_of_results": 3,
+      "output_collection": "view1e13168b482846e0827d6c41cc9224f9"
+    }    
+    ```
+
 
 ## GET `/mongo/parentcomments?comment=<comments id>` 
 
@@ -501,13 +559,13 @@ This endpoint will use mongo only to retrieve all comments parented by comments 
     ]
     ```
 
-## GET `/graph/grandparentcomments?comment=<comments id>` 
+## GET `/graph/grandparentcomments?comment=<comments id>&save=<true/false>` 
 
 This endpoint will use the graph DB to retrieve all comments grandparented by comments authored by the author of the parent of the provided comment.
-  - Example request: 
+  - Example request, opting to return the items in the response: 
     
     ```
-    GET http://<host>:8080/graph/grandparentcomments?comment=578f5324b1df410001e01da0
+    GET http://<host>:8080/graph/grandparentcomments?comment=578f5324b1df410001e01da0&save=false
     ```
   
   - Example response:
@@ -545,6 +603,21 @@ This endpoint will use the graph DB to retrieve all comments grandparented by co
       }
     ]
     ```
+  - Example request, with items saved to a Mongo collection: 
+    
+    ```
+    GET http://<host>:8080/graph/grandparentcomments?comment=578f5324b1df410001e01da0&save=true
+    ```
+  
+  - Example response:
+  
+    ```
+    {
+      "number_of_results": 3,
+      "output_collection": "view1e13168b482846e0827d6c41cc9224f9"
+    }    
+    ```
+
 
 ## GET `/mongo/grandparentcomments?comment=<comments id>` 
 
@@ -591,13 +664,13 @@ This endpoint will use mongo only to retrieve all comments grandparented by comm
     ]
     ```
 
-## GET `/graph/greatgrandparentcomments?comment=<comments id>` 
+## GET `/graph/greatgrandparentcomments?comment=<comments id>&save=<true/false>` 
 
 This endpoint will use the graph DB to retrieve all comments great-grandparented by comments authored by the author of the parent of the provided comment.
   - Example request: 
     
     ```
-    GET http://<host>:8080/graph/greatgrandparentcomments?comment=578f5324b1df410001e01da0
+    GET http://<host>:8080/graph/greatgrandparentcomments?comment=578f5324b1df410001e01da0&save=false
     ```
   
   - Example response:
@@ -635,6 +708,21 @@ This endpoint will use the graph DB to retrieve all comments great-grandparented
       }
     ]
     ```
+  - Example request, with items saved to a Mongo collection: 
+    
+    ```
+    GET http://<host>:8080/graph/greatgrandparentcomments?comment=578f5324b1df410001e01da0&save=true
+    ```
+  
+  - Example response:
+  
+    ```
+    {
+      "number_of_results": 3,
+      "output_collection": "view1e13168b482846e0827d6c41cc9224f9"
+    }    
+    ```
+
 
 ## GET `/mongo/greatgrandparentcomments?comment=<comments id>` 
 
