@@ -39,3 +39,9 @@ type CollectionOut struct {
 	Number     int    `json:"number_of_results"`
 	Collection string `json:"output_collection"`
 }
+
+// IronInput is used when parsing payloads from Iron.io.
+type IronInput struct {
+	Asset     string `json:"asset"`
+	MongoHost string `json:"mongo_host"`
+}

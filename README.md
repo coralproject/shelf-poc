@@ -9,7 +9,7 @@ The goals of shelf are:
 This POC mocks out much of this functionality, such that we can evaluate architecture decisions, formatting, config, etc.  The POC includes the following:
 
 - Data importing/ingestion using a branch of `xenia` ([item-cayley](https://github.com/coralproject/xenia/tree/item-cayley)) with a modified internal `item` package and `sponged` cmd.
-- Dummy data and relationship generation using the `shelfdummy` program included [here](shelfdummy).
+- Dummy data and relationship generation using the `shelfdummy-direct` program included [here](shelfdummy-direct) or the `shelfdummy-sponged` included [here](shelfdummy-sponged).
 - View generation based on relationships using the `shelfquery` web server included [here](shelfquery).
 - Stats collection for views using the `shelfstats` script includes [here](shelfstats).
 
@@ -24,11 +24,19 @@ This POC mocks out much of this functionality, such that we can evaluate archite
 
 ### 1. Prepare data
 
-If you want to create dummy data for testing:
+If you want to create dummy data for testing using directly, where items do not have embedded relationships and relationships are only reflected in the graph DB:
 
-  1. Build the `shelfdummy` binary by executing `go build` [here](shelfdummy), OR build a Docker image including the binary using the [Makefile](shelfdummy/Makefile).  Note, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
-  2. Define the example environmental variables in [dummy.env](files/dummy.env).  Modify it according to where `sponged` is installed and how many documents you want to generate.
-  3. Run `shelfdummy` (or the Docker image if you built it).  When this executes, it will:
+  1. Build the `shelfdummy-direct` binary by executing `go build` [here](shelfdummy-direct), OR build a Docker image including the binary using the [Makefile](shelfdummy-direct/Makefile).  Note, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
+  2. Define the example environmental variables in [shelf.env](files/shelf.env).  Modify them according to how many documents you want to generate.
+  3. Run `shelfdummy-direct` (or the Docker image if you built it).  When this executes, it will:
+    - Generate dummy items including assets, comments, and users in the proportions 5%, 80%, and 15%, respectively.
+    - For each of the generated items, store the item along with inserting the item and any relevant relationships into the Cayley graph DB.
+
+If you want to create dummy data for testing using `sponged`, where `sponged` will both embed relationships in Mongo and create graph DB items:
+
+  1. Build the `shelfdummy-sponged` binary by executing `go build` [here](shelfdummy-sponged), OR build a Docker image including the binary using the [Makefile](shelfdummy-sponged/Makefile).  Note, you would likely want to change the tags of the docker image to build locally or push up to the docker registry of your choice.
+  2. Define the example environmental variables in [dummy.env](files/dummy.env).  Modify them according to where `sponged` is installed and how many documents you want to generate.
+  3. Run `shelfdummy-sponged` (or the Docker image if you built it).  When this executes, it will:
     - Generate dummy items including assets, comments, and users in the proportions 5%, 80%, and 15%, respectively.
     - For each of the generated items, send the item to `sponged`, where `sponged` will format, verify, and store the item along with inserting the item and any relevant relationships into the Cayley graph DB.
 
@@ -50,3 +58,5 @@ You will now be able to make use of the view endpoints described [here](shelfque
 1. Build the `shelfstats` binary by executing `go build` [here](shelfstats).
 2. Set [these](files/stats.env) environmental vars.
 3. Run `shelfstats`.  This will output stats (see example [here](shelfstats/README.md)) for all available queries to standard out.
+
+What's next? Find out more in our <a href="https://docs.google.com/document/d/1YEqoy0tbY7mknWxrINClEs9RV3b3nbD2QOvJw9Jo8lE/edit?usp=sharing">product document (work in progress.)</a>

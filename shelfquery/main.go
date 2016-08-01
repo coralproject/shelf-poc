@@ -7,6 +7,10 @@ import (
 	"github.com/pkg/errors"
 )
 
+var (
+	fills chan FillRel
+)
+
 func main() {
 
 	// Check connection to Mongo.
@@ -17,6 +21,11 @@ func main() {
 		log.Fatal(err)
 	}
 	mgoDB.CloseMGO("Mongo")
+
+	// Start listening for relationships that need to be embedded in
+	// saved views.
+	fills = make(chan FillRel, 1000)
+	fillRelationships()
 
 	// ListenAndServe starts an HTTP server with a given address and
 	// handler defined in NewRouter

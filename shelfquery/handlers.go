@@ -103,33 +103,58 @@ func GetComment(w http.ResponseWriter, r *http.Request) {
 // using graphed relationships managed via Cayley.
 func GraphQuerySingle(w http.ResponseWriter, r *http.Request) {
 
-	// Get the asset ID from the query string.
+	// Get the asset ID and storage bool from the query string.
 	queryvals := r.URL.Query()
 	assetID := queryvals["asset"][0]
+	saveIn := queryvals["save"][0]
+	save, err := strconv.ParseBool(saveIn)
+	if err != nil {
+		err = errors.Wrap(err, "Could not parse save parameter.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Query cayley to get the item IDs related to this asset ID.
-	itemIDs, err := getItemsOnAsset(assetID)
+	itemIDs, fillRels, err := getItemsOnAsset(assetID)
 	if err != nil {
 		err = errors.Wrap(err, "Could not retrieve item IDs from Cayley.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Query MongoDB to retrieve the corresponding documents.
-	items, err := retrieveObjectList(itemIDs)
-	if err != nil {
-		err = errors.Wrap(err, "Could not retrieve items from Mongo.")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	// If we are not persisting the view query MongoDB to retrieve
+	// the corresponding documents out send those back in the response.
+	if !save {
+		items, err := retrieveObjectList(itemIDs)
+		if err != nil {
+			err = errors.Wrap(err, "Could not retrieve items from Mongo.")
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		// Encode the results.
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(items); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
 		return
 	}
 
+	// Otherwise, save the view to a Mongo collection.
+	output, err := saveView(itemIDs, fillRels)
+	if err != nil {
+		err = errors.Wrap(err, "Could not save generated view.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	// Encode the results.
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(items); err != nil {
+	if err := json.NewEncoder(w).Encode(output); err != nil {
 		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 	}
 	return
+
 }
 
 // GraphQueryUserAssets returns all asset items commented on by the given user
@@ -139,9 +164,16 @@ func GraphQueryUserAssets(w http.ResponseWriter, r *http.Request) {
 	// Get the asset ID from the query string.
 	queryvals := r.URL.Query()
 	userID := queryvals["user"][0]
+	saveIn := queryvals["save"][0]
+	save, err := strconv.ParseBool(saveIn)
+	if err != nil {
+		err = errors.Wrap(err, "Could not parse save parameter.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Query cayley to get the item IDs related to this asset ID.
-	itemIDs, err := getAssetsOnUser(userID)
+	itemIDs, fillRels, err := getAssetsOnUser(userID)
 	if err != nil {
 		err = errors.Wrap(err, "Could not retrieve item IDs from Cayley.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -149,17 +181,32 @@ func GraphQueryUserAssets(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Query MongoDB to retrieve the corresponding documents.
-	items, err := retrieveObjectList(itemIDs)
-	if err != nil {
-		err = errors.Wrap(err, "Could not retrieve items from Mongo.")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if !save {
+		items, err := retrieveObjectList(itemIDs)
+		if err != nil {
+			err = errors.Wrap(err, "Could not retrieve items from Mongo.")
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(items); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
 		return
 	}
 
+	// Otherwise, save the view to a Mongo collection.
+	output, err := saveView(itemIDs, fillRels)
+	if err != nil {
+		err = errors.Wrap(err, "Could not save generated view.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	// Encode the results.
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(items); err != nil {
+	if err := json.NewEncoder(w).Encode(output); err != nil {
 		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 	}
 	return
@@ -172,9 +219,16 @@ func GraphQueryUserComments(w http.ResponseWriter, r *http.Request) {
 	// Get the asset ID from the query string.
 	queryvals := r.URL.Query()
 	userID := queryvals["user"][0]
+	saveIn := queryvals["save"][0]
+	save, err := strconv.ParseBool(saveIn)
+	if err != nil {
+		err = errors.Wrap(err, "Could not parse save parameter.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Query cayley to get the item IDs related to this asset ID.
-	itemIDs, err := getCommentsOnUser(userID)
+	itemIDs, fillRels, err := getCommentsOnUser(userID)
 	if err != nil {
 		err = errors.Wrap(err, "Could not retrieve item IDs from Cayley.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -182,17 +236,33 @@ func GraphQueryUserComments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Query MongoDB to retrieve the corresponding documents.
-	items, err := retrieveObjectList(itemIDs)
-	if err != nil {
-		err = errors.Wrap(err, "Could not retrieve items from Mongo.")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if !save {
+		items, err := retrieveObjectList(itemIDs)
+		if err != nil {
+			err = errors.Wrap(err, "Could not retrieve items from Mongo.")
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		// Encode the results.
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(items); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
 		return
 	}
 
+	// Otherwise, save the view to a Mongo collection.
+	output, err := saveView(itemIDs, fillRels)
+	if err != nil {
+		err = errors.Wrap(err, "Could not save generated view.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	// Encode the results.
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(items); err != nil {
+	if err := json.NewEncoder(w).Encode(output); err != nil {
 		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 	}
 	return
@@ -205,9 +275,16 @@ func GraphQueryParComments(w http.ResponseWriter, r *http.Request) {
 	// Get the asset ID from the query string.
 	queryvals := r.URL.Query()
 	commentID := queryvals["comment"][0]
+	saveIn := queryvals["save"][0]
+	save, err := strconv.ParseBool(saveIn)
+	if err != nil {
+		err = errors.Wrap(err, "Could not parse save parameter.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Query cayley to get the item IDs related to this asset ID.
-	itemIDs, err := getCommentsOnPar(commentID)
+	itemIDs, fillRels, err := getCommentsOnPar(commentID)
 	if err != nil {
 		err = errors.Wrap(err, "Could not retrieve item IDs from Cayley.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -215,17 +292,33 @@ func GraphQueryParComments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Query MongoDB to retrieve the corresponding documents.
-	items, err := retrieveObjectList(itemIDs)
-	if err != nil {
-		err = errors.Wrap(err, "Could not retrieve items from Mongo.")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if !save {
+		items, err := retrieveObjectList(itemIDs)
+		if err != nil {
+			err = errors.Wrap(err, "Could not retrieve items from Mongo.")
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		// Encode the results.
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(items); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
 		return
 	}
 
+	// Otherwise, save the view to a Mongo collection.
+	output, err := saveView(itemIDs, fillRels)
+	if err != nil {
+		err = errors.Wrap(err, "Could not save generated view.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	// Encode the results.
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(items); err != nil {
+	if err := json.NewEncoder(w).Encode(output); err != nil {
 		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 	}
 	return
@@ -238,9 +331,16 @@ func GraphQueryGrandparComments(w http.ResponseWriter, r *http.Request) {
 	// Get the asset ID from the query string.
 	queryvals := r.URL.Query()
 	commentID := queryvals["comment"][0]
+	saveIn := queryvals["save"][0]
+	save, err := strconv.ParseBool(saveIn)
+	if err != nil {
+		err = errors.Wrap(err, "Could not parse save parameter.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Query cayley to get the item IDs related to this asset ID.
-	itemIDs, err := getGrandCommentsOnPar(commentID)
+	itemIDs, fillRels, err := getGrandCommentsOnPar(commentID)
 	if err != nil {
 		err = errors.Wrap(err, "Could not retrieve item IDs from Cayley.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -248,17 +348,33 @@ func GraphQueryGrandparComments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Query MongoDB to retrieve the corresponding documents.
-	items, err := retrieveObjectList(itemIDs)
-	if err != nil {
-		err = errors.Wrap(err, "Could not retrieve items from Mongo.")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if !save {
+		items, err := retrieveObjectList(itemIDs)
+		if err != nil {
+			err = errors.Wrap(err, "Could not retrieve items from Mongo.")
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		// Encode the results.
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(items); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
 		return
 	}
 
+	// Otherwise, save the view to a Mongo collection.
+	output, err := saveView(itemIDs, fillRels)
+	if err != nil {
+		err = errors.Wrap(err, "Could not save generated view.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	// Encode the results.
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(items); err != nil {
+	if err := json.NewEncoder(w).Encode(output); err != nil {
 		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 	}
 	return
@@ -271,9 +387,16 @@ func GraphQueryGrGrandparComments(w http.ResponseWriter, r *http.Request) {
 	// Get the asset ID from the query string.
 	queryvals := r.URL.Query()
 	commentID := queryvals["comment"][0]
+	saveIn := queryvals["save"][0]
+	save, err := strconv.ParseBool(saveIn)
+	if err != nil {
+		err = errors.Wrap(err, "Could not parse save parameter.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Query cayley to get the item IDs related to this asset ID.
-	itemIDs, err := getGrGrandCommentsOnPar(commentID)
+	itemIDs, fillRels, err := getGrGrandCommentsOnPar(commentID)
 	if err != nil {
 		err = errors.Wrap(err, "Could not retrieve item IDs from Cayley.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -281,17 +404,33 @@ func GraphQueryGrGrandparComments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Query MongoDB to retrieve the corresponding documents.
-	items, err := retrieveObjectList(itemIDs)
-	if err != nil {
-		err = errors.Wrap(err, "Could not retrieve items from Mongo.")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if !save {
+		items, err := retrieveObjectList(itemIDs)
+		if err != nil {
+			err = errors.Wrap(err, "Could not retrieve items from Mongo.")
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		// Encode the results.
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(items); err != nil {
+			log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
+		}
 		return
 	}
 
+	// Otherwise, save the view to a Mongo collection.
+	output, err := saveView(itemIDs, fillRels)
+	if err != nil {
+		err = errors.Wrap(err, "Could not save generated view.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	// Encode the results.
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(items); err != nil {
+	if err := json.NewEncoder(w).Encode(output); err != nil {
 		log.Printf("%s: %s", "ERROR Could not encode JSON response", err.Error())
 	}
 	return
