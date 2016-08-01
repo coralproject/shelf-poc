@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "t5y+edxD4dejdQoRBABReqdbXcU=",
+			"path": "github.com/pkg/errors",
+			"revision": "d814416a46cbb066b728cfff58d30a986bc9ddbe",
+			"revisionTime": "2016-05-10T21:41:07Z"
+		}
+	],
+	"rootPath": "github.com/coralproject/shelf-poc/shelfdummy-sponged"
+}

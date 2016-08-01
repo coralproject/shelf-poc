@@ -1,0 +1,85 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "tJLFSeWyXG8RWcdQ3oNtI7meD3c=",
+			"path": "github.com/gonum/blas",
+			"revision": "395b753788dae8183094848beaaf9ed1a2b5c3bc",
+			"revisionTime": "2016-04-18T18:24:31Z"
+		},
+		{
+			"checksumSHA1": "Hc4+U8HpN0345fLzyzrxlqYBBMs=",
+			"path": "github.com/gonum/blas/blas64",
+			"revision": "395b753788dae8183094848beaaf9ed1a2b5c3bc",
+			"revisionTime": "2016-04-18T18:24:31Z"
+		},
+		{
+			"checksumSHA1": "oMge2V4pOJEB6fX/mPn2W/oX9Xw=",
+			"path": "github.com/gonum/blas/native",
+			"revision": "395b753788dae8183094848beaaf9ed1a2b5c3bc",
+			"revisionTime": "2016-04-18T18:24:31Z"
+		},
+		{
+			"checksumSHA1": "4URlS0sh4+VMLN6iDIYdt0JfpFg=",
+			"path": "github.com/gonum/blas/native/internal/math32",
+			"revision": "395b753788dae8183094848beaaf9ed1a2b5c3bc",
+			"revisionTime": "2016-04-18T18:24:31Z"
+		},
+		{
+			"checksumSHA1": "Z/2UmBcGPVG2JKszHGwoS4e1UsE=",
+			"path": "github.com/gonum/floats",
+			"revision": "a889dbecc06d261de2d4224a9c5e3d8572344586",
+			"revisionTime": "2016-04-18T17:37:26Z"
+		},
+		{
+			"checksumSHA1": "c9Iryr2u6jMi4TlwBHfLxS1vnYc=",
+			"path": "github.com/gonum/internal/asm",
+			"revision": "dfc41b88c61abb86b551dc02ec92bb217caea473",
+			"revisionTime": "2016-04-18T17:44:29Z"
+		},
+		{
+			"checksumSHA1": "2HjxjnmB+yleByITSwKaE4mt8sM=",
+			"path": "github.com/gonum/lapack",
+			"revision": "6f81dbc66ac519d8001cbd97f5cb2cdc631b1125",
+			"revisionTime": "2016-04-18T17:11:26Z"
+		},
+		{
+			"checksumSHA1": "sMw2mRupPf0XP8AGjs+UNrV8a0E=",
+			"path": "github.com/gonum/lapack/lapack64",
+			"revision": "6f81dbc66ac519d8001cbd97f5cb2cdc631b1125",
+			"revisionTime": "2016-04-18T17:11:26Z"
+		},
+		{
+			"checksumSHA1": "s9NxKc8juFieRfWBgSnFNI6IPqs=",
+			"path": "github.com/gonum/lapack/native",
+			"revision": "6f81dbc66ac519d8001cbd97f5cb2cdc631b1125",
+			"revisionTime": "2016-04-18T17:11:26Z"
+		},
+		{
+			"checksumSHA1": "Kc/zUGRoA9S4HyhXvEHM7ye12d0=",
+			"path": "github.com/gonum/matrix",
+			"revision": "859f0a9ae83d693aa0781e378051f0b4df3612bf",
+			"revisionTime": "2016-04-18T17:11:40Z"
+		},
+		{
+			"checksumSHA1": "bvmMpvdJtYFFt0u8GDDss7Ytzvg=",
+			"path": "github.com/gonum/matrix/mat64",
+			"revision": "859f0a9ae83d693aa0781e378051f0b4df3612bf",
+			"revisionTime": "2016-04-18T17:11:40Z"
+		},
+		{
+			"checksumSHA1": "TdoxOHsiAPNZDgOr3Klv3RomDws=",
+			"path": "github.com/gonum/stat",
+			"revision": "9676b672bd22e6a8e8aa8bac1db86f75840f7b79",
+			"revisionTime": "2016-06-17T19:25:47Z"
+		},
+		{
+			"checksumSHA1": "t5y+edxD4dejdQoRBABReqdbXcU=",
+			"path": "github.com/pkg/errors",
+			"revision": "d814416a46cbb066b728cfff58d30a986bc9ddbe",
+			"revisionTime": "2016-05-10T21:41:07Z"
+		}
+	],
+	"rootPath": "github.com/coralproject/shelf-poc/shelfstats"
+}
