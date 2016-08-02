@@ -77,19 +77,22 @@ NUMBER OF RELATIONSHIP LEVELS: 1-2
 GRAPH MEAN RESPONSE TIME (seconds): 34.8924
 
 =============================================
-QUERY #4: All comments parented by a set of comments, the set of comments being authored by the author of the parent of a given comment
+QUERY #4: All comments parented by a set of comments, the set of comments being authored by the author 
+of the parent of a given comment
 NUMBER OF RELATIONSHIP LEVELS: 4
 
 GRAPH MEAN RESPONSE TIME (seconds): 33.8968
 
 =============================================
-QUERY #5: All comments grandparented by a set of comments, the set of comments being authored by the author of the parent of a given comment
+QUERY #5: All comments grandparented by a set of comments, the set of comments being authored by the 
+author of the parent of a given comment
 NUMBER OF RELATIONSHIP LEVELS: 5
 
 GRAPH MEAN RESPONSE TIME (seconds): 33.7320
 
 =============================================
-QUERY #6: All comments great-grandparented by a set of comments, the set of comments being authored by the author of the parent of a given comment
+QUERY #6: All comments great-grandparented by a set of comments, the set of comments being authored 
+by the author of the parent of a given comment
 NUMBER OF RELATIONSHIP LEVELS: 6
 
 GRAPH MEAN RESPONSE TIME (seconds): 33.8621
