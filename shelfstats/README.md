@@ -2,52 +2,52 @@
 
 ```
 NUMBER OF DOCUMENTS: 100000
-NUMBER OF REQUESTS PER QUERY: 100
+NUMBER OF REQUESTS PER QUERY: 10
 
 =============================================
 QUERY #1: All comments authored by a random user
 NUMBER OF RELATIONSHIP LEVELS: 1
 
-MONGO MEAN RESPONSE TIME (seconds): 0.0886
-GRAPH MEAN RESPONSE TIME (seconds): 0.3520
+MONGO MEAN RESPONSE TIME (seconds): 0.1604
+GRAPH MEAN RESPONSE TIME (seconds): 0.4108
 
 =============================================
 QUERY #2: All assets commented on by a user
 NUMBER OF RELATIONSHIP LEVELS: 1
 
-MONGO MEAN RESPONSE TIME (seconds): 0.0891
-GRAPH MEAN RESPONSE TIME (seconds): 0.3677
+MONGO MEAN RESPONSE TIME (seconds): 0.1620
+GRAPH MEAN RESPONSE TIME (seconds): 0.4326
 
 =============================================
 QUERY #3: All comments on an asset along with corresponding authors
 NUMBER OF RELATIONSHIP LEVELS: 1-2
 
-MONGO MEAN RESPONSE TIME (seconds): 0.0897
-GRAPH MEAN RESPONSE TIME (seconds): 0.3745
+MONGO MEAN RESPONSE TIME (seconds): 0.1689
+GRAPH MEAN RESPONSE TIME (seconds): 0.4356
 
 =============================================
-QUERY #4: All comments parented by a set of comments, the set of comments being authored by the autho
-r of the parent of a given comment
+QUERY #4: All comments parented by a set of comments, the set of comments being authored by the author 
+of the parent of a given comment
 NUMBER OF RELATIONSHIP LEVELS: 4
 
-MONGO MEAN RESPONSE TIME (seconds): 0.1864
-GRAPH MEAN RESPONSE TIME (seconds): 0.3618
+MONGO MEAN RESPONSE TIME (seconds): 0.2674
+GRAPH MEAN RESPONSE TIME (seconds): 0.4206
 
 =============================================
 QUERY #5: All comments grandparented by a set of comments, the set of comments being authored by the 
 author of the parent of a given comment
 NUMBER OF RELATIONSHIP LEVELS: 5
 
-MONGO MEAN RESPONSE TIME (seconds): 0.2811
-GRAPH MEAN RESPONSE TIME (seconds): 0.3684
+MONGO MEAN RESPONSE TIME (seconds): 0.3458
+GRAPH MEAN RESPONSE TIME (seconds): 0.4683
 
 =============================================
-QUERY #6: All comments great-grandparented by a set of comments, the set of comments being authored b
-y the author of the parent of a given comment
+QUERY #6: All comments great-grandparented by a set of comments, the set of comments being authored by 
+the author of the parent of a given comment
 NUMBER OF RELATIONSHIP LEVELS: 6
 
-MONGO MEAN RESPONSE TIME (seconds): 0.3761
-GRAPH MEAN RESPONSE TIME (seconds): 0.3631
+MONGO MEAN RESPONSE TIME (seconds): 0.4676
+GRAPH MEAN RESPONSE TIME (seconds): 0.4532
 ```
 
 ## Example output for 1M documents
