@@ -40,7 +40,7 @@ In addition to applicatoin benchmarks, this page includes a series of features r
 * How long does a new comment or action take to make it from input to output?
 * How does the system perform as Item Store size varies?
 
-## Personalization Modifyers 
+## Reach Goals
 
 We will want to apply a series of modifyers on top of the basic benchmark behavior above so that we can deliver a uniquely cusomized experience for each user. 
 
