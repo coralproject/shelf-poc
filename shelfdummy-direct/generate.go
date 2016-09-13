@@ -126,23 +126,47 @@ func generateComments(numComments, numUsers, numAssets int) error {
 		}
 
 		// Generate relationships.
+		var rels []Rel
 		var quads []quad.Quad
 		quads = append(quads, quad.Make(item.ID.Hex(), "is_type", "coral_comment", ""))
 
 		// Add contextualized with relationship.
 		assetID := assetIDs[rand.Intn(numDoc/20)]
 		quads = append(quads, quad.Make(item.ID.Hex(), "contextualized_with", assetID.Hex(), ""))
+		rel := Rel{
+			Name: "context",
+			Type: "coral_asset",
+			ID:   assetID.Hex(),
+		}
+		rels = append(rels, rel)
 
 		// Add authored by relationship.
 		authorID := userIDs[rand.Intn((numDoc*3)/20)]
 		quads = append(quads, quad.Make(authorID.Hex(), "authored", item.ID.Hex(), ""))
+		rel = Rel{
+			Name: "author",
+			Type: "coral_user",
+			ID:   authorID.Hex(),
+		}
+		rels = append(rels, rel)
 
 		// Get parent relationship if necessary.
 		if rand.Intn(2) == 1 {
 			if len(commentIDs) > 2 {
 				commentID := commentIDs[rand.Intn(len(commentIDs))]
 				quads = append(quads, quad.Make(item.ID.Hex(), "parented_by", commentID.Hex(), ""))
+				rel = Rel{
+					Name: "parent",
+					Type: "coral_comment",
+					ID:   commentID.Hex(),
+				}
+				rels = append(rels, rel)
 			}
+		}
+
+		// Embed the relationships in Mongo if enabled.
+		if embed {
+			item.Rels = rels
 		}
 
 		// Send the job to the workers.

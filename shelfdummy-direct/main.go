@@ -28,6 +28,7 @@ var (
 	commentIDs []bson.ObjectId
 	tx         *graph.Transaction
 	txMutex    *sync.Mutex
+	embed      bool
 )
 
 func init() {
@@ -71,6 +72,18 @@ func init() {
 		err := errors.Wrap(err, "Could not parse the number of jobs")
 		log.Fatal(err)
 	}
+
+	// Import the option to embed relationships in Mongo.
+	embedEnv, present := os.LookupEnv("SHELF_EMBED")
+	if !present {
+		log.Fatal("The SHELF_EMBED environmental var. is not defined")
+	}
+	embed, err = strconv.ParseBool(embedEnv)
+	if err != nil {
+		err := errors.Wrap(err, "Could not parse the embed option")
+		log.Fatal(err)
+	}
+
 }
 
 func main() {

@@ -1,0 +1,11 @@
+{
+	"item_id": "80aa936a-f618-4234-a7be-df59a14cf8de",
+	"type": "PTEST_user",
+	"version": 1,
+	"data": {
+		"first_name": "Bilbo",
+		"last_name": "Baggins",
+		"email": "ringbearer@bagend.com",
+		"role": "hobbit"
+	}
+}

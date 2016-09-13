@@ -1,0 +1,13 @@
+{
+	"name": "VTEST_user comments",
+	"start_type": "PTEST_user",
+	"collection": "items",
+	"path": [
+		{
+			"level": 1,
+			"direction": "out",
+			"predicate": "authored",
+			"tag": "comment"
+		}
+	]
+}

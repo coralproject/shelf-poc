@@ -9,17 +9,17 @@ import (
 )
 
 const (
-	userCommentsGraphURL    = "http://%s:8080/graph/usercomments?user=%s"
+	userCommentsGraphURL    = "http://%s:8080/graph/usercomments?user=%s&save=false"
 	userCommentsMongoURL    = "http://%s:8080/mongo/usercomments?user=%s"
-	userAssetsGraphURL      = "http://%s:8080/graph/userassets?user=%s"
+	userAssetsGraphURL      = "http://%s:8080/graph/userassets?user=%s&save=false"
 	userAssetsMongoURL      = "http://%s:8080/mongo/userassets?user=%s"
-	assetGraphURL           = "http://%s:8080/graph/singleasset?asset=%s"
+	assetGraphURL           = "http://%s:8080/graph/singleasset?asset=%s&save=false"
 	assetMongoURL           = "http://%s:8080/mongo/singleasset?asset=%s"
-	parentedGraphURL        = "http://%s:8080/graph/parentcomments?comment=%s"
+	parentedGraphURL        = "http://%s:8080/graph/parentcomments?comment=%s&save=false"
 	parentedMongoURL        = "http://%s:8080/mongo/parentcomments?comment=%s"
-	grandParentedGraphURL   = "http://%s:8080/graph/grandparentcomments?comment=%s"
+	grandParentedGraphURL   = "http://%s:8080/graph/grandparentcomments?comment=%s&save=false"
 	grandParentedMongoURL   = "http://%s:8080/mongo/grandparentcomments?comment=%s"
-	grGrandParentedGraphURL = "http://%s:8080/graph/greatgrandparentcomments?comment=%s"
+	grGrandParentedGraphURL = "http://%s:8080/graph/greatgrandparentcomments?comment=%s&save=false"
 	grGrandParentedMongoURL = "http://%s:8080/mongo/greatgrandparentcomments?comment=%s"
 )
 

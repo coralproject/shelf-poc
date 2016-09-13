@@ -1,0 +1,11 @@
+{
+	"subject_types": [
+		"PTEST_comment"
+	],
+	"predicate": "on",
+	"object_types": [
+		"PTEST_asset"
+	],
+	"in_string": "on",
+	"out_string": "having"
+}

@@ -1,0 +1,19 @@
+{
+	"name": "VTEST_thread",
+	"collection": "items",
+	"start_type": "PTEST_asset",
+	"path": [
+		{
+			"level": 1,
+			"direction": "in",
+			"predicate": "on",
+			"tag": "comment"
+		},
+		{
+			"level": 2,
+			"direction": "in",
+			"predicate": "authored",
+			"tag": "author"
+		}
+	]
+}
