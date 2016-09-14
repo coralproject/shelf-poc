@@ -1,7 +1,7 @@
 {
-	"name": "VTEST_thread",
+	"name": "thread",
 	"collection": "items",
-	"start_type": "PTEST_asset",
+	"start_type": "asset",
 	"path": [
 		{
 			"level": 1,

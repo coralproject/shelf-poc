@@ -1,6 +1,6 @@
 {
 	"item_id": "a63af637-58af-472b-98c7-f5c00743bac6",
-	"type": "PTEST_user",
+	"type": "user",
 	"version": 1,
 	"data": {
 		"name": "Gandalf",

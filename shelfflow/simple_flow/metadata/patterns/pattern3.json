@@ -1,5 +1,5 @@
 {
-	"type": "PTEST_asset",
+	"type": "asset",
 	"inferences": [
 		{
 			"related_ID_field": "section",

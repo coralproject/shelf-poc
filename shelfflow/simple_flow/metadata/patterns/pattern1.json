@@ -1,5 +1,5 @@
 {
-	"type": "PTEST_comment",
+	"type": "comment",
 	"inferences": [
 		{
 			"related_ID_field": "author",

@@ -8,9 +8,9 @@
 
 4. Now you can examine enabled views via, e.g.,
 
-    wire view execute -n VTEST_thread -i c1b2bbfe-af9f-4903-8777-bd47c4d5b20a
-    wire view execute -n "VTEST_user comments" -i a63af637-58af-472b-98c7-f5c00743bac6
-    wire view execute -n "VTEST_user comments" -i 80aa936a-f618-4234-a7be-df59a14cf8de
+    wire view execute -n thread -i c1b2bbfe-af9f-4903-8777-bd47c4d5b20a
+    wire view execute -n "user comments" -i a63af637-58af-472b-98c7-f5c00743bac6
+    wire view execute -n "user comments" -i 80aa936a-f618-4234-a7be-df59a14cf8de
 
 5. Cleanup by running `cleanup.sh`.
     

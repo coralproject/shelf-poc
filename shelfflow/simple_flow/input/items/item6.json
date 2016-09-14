@@ -1,6 +1,6 @@
 {
 	"item_id": "c1b2bbfe-af9f-4903-8777-bd47c4d5b20a",
-	"type": "PTEST_asset",
+	"type": "asset",
 	"version": 1,
 	"data": {
 		"title": "Avoiding the pitfalls of the dark side of the force.",

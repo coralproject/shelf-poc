@@ -1,12 +1,12 @@
 {
 	"subject_types": [
-		"PTEST_user"
+		"user"
 	],
 	"predicate": "flagged",
 	"object_types": [
-		"PTEST_comment",
-		"PTEST_asset",
-		"PTEST_user"
+		"comment",
+		"asset",
+		"user"
 	],
 	"in_string": "flagged",
 	"out_string": "flagged by"

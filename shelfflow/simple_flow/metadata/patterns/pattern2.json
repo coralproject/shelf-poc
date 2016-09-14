@@ -1,5 +1,5 @@
 {
-	"type": "PTEST_user",
+	"type": "user",
 	"inferences": [
 		{
 			"related_ID_field": "role",
