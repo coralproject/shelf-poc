@@ -1,52 +1,84 @@
 [
-	{
-		"subject": "80aa936a-f618-4234-a7be-df59a14cf8de",
-		"predicate": "authored",
-		"object": "d1dfa366-d2f7-4a4a-a64f-af89d4c97d82"
-	},
-	{
-		"subject": "d1dfa366-d2f7-4a4a-a64f-af89d4c97d82", 
-		"predicate": "on",
-	        "object": "c1b2bbfe-af9f-4903-8777-bd47c4d5b20a"
-	},
-	{
-		"subject": "80aa936a-f618-4234-a7be-df59a14cf8de", 
-		"predicate": "authored", 
-		"object": "6eaaa19f-da7a-4095-bbe3-cee7a7631dd4"
-	}, 
-	{
-		"subject": "6eaaa19f-da7a-4095-bbe3-cee7a7631dd4", 
-		"predicate": "parented_by", 
-		"object": "d1dfa366-d2f7-4a4a-a64f-af89d4c97d82"
-	}, 
-	{
-		"subject": "6eaaa19f-da7a-4095-bbe3-cee7a7631dd4", 
-		"predicate": "on",
-	    	"object": "c1b2bbfe-af9f-4903-8777-bd47c4d5b20a"
-	},
-	{
-		"subject": "a63af637-58af-472b-98c7-f5c00743bac6", 
-		"predicate": "authored", 
-		"object": "d16790f8-13e9-4cb4-b9ef-d82835589660"
-	}, 
-	{
-		"subject": "d16790f8-13e9-4cb4-b9ef-d82835589660", 
-		"predicate": "on", 
-		"object": "c1b2bbfe-af9f-4903-8777-bd47c4d5b20a"
-	},
-	{
-		"subject": "80aa936a-f618-4234-a7be-df59a14cf8de", 
-		"predicate": "has_role", 
-		"object": "hobbit"
-	},
-	{
-		"subject": "a63af637-58af-472b-98c7-f5c00743bac6", 
-		"predicate": "has_role", 
-		"object": "wizard"
-	},
-	{
-		"subject": "c1b2bbfe-af9f-4903-8777-bd47c4d5b20a", 
-		"predicate": "part_of", 
-		"object": "tutorials"
-	}
+    {
+        "Subject": "80aa936a-f618-4234-a7be-df59a14cf8de",
+        "Predicate": "authored",
+        "Object": "d1dfa366-d2f7-4a4a-a64f-af89d4c97d82"
+    },
+    {
+        "Subject": "d1dfa366-d2f7-4a4a-a64f-af89d4c97d82",
+        "Predicate": "on",
+        "Object": "c1b2bbfe-af9f-4903-8777-bd47c4d5b20a"
+    },
+    {
+        "Subject": "91379277-ae19-4030-9e4c-7ec946fcdc48",
+        "Predicate": "authored",
+        "Object": "40f14d75-3759-44f6-8546-15ebbfe047b0"
+    },
+    {
+        "Subject": "40f14d75-3759-44f6-8546-15ebbfe047b0",
+        "Predicate": "on",
+        "Object": "2dccbccb-9919-482c-9003-80c7918c02b9"
+    },
+    {
+        "Subject": "80aa936a-f618-4234-a7be-df59a14cf8de",
+        "Predicate": "authored",
+        "Object": "6eaaa19f-da7a-4095-bbe3-cee7a7631dd4"
+    },
+    {
+        "Subject": "6eaaa19f-da7a-4095-bbe3-cee7a7631dd4",
+        "Predicate": "parented_by",
+        "Object": "d1dfa366-d2f7-4a4a-a64f-af89d4c97d82"
+    },
+    {
+        "Subject": "6eaaa19f-da7a-4095-bbe3-cee7a7631dd4",
+        "Predicate": "on",
+        "Object": "c1b2bbfe-af9f-4903-8777-bd47c4d5b20a"
+    },
+    {
+        "Subject": "a63af637-58af-472b-98c7-f5c00743bac6",
+        "Predicate": "authored",
+        "Object": "d16790f8-13e9-4cb4-b9ef-d82835589660"
+    },
+    {
+        "Subject": "d16790f8-13e9-4cb4-b9ef-d82835589660",
+        "Predicate": "on",
+        "Object": "c1b2bbfe-af9f-4903-8777-bd47c4d5b20a"
+    },
+    {
+        "Subject": "80aa936a-f618-4234-a7be-df59a14cf8de",
+        "Predicate": "has_role",
+        "Object": "hobbit"
+    },
+    {
+        "Subject": "a63af637-58af-472b-98c7-f5c00743bac6",
+        "Predicate": "has_role",
+        "Object": "wizard"
+    },
+    {
+        "Subject": "c1b2bbfe-af9f-4903-8777-bd47c4d5b20a",
+        "Predicate": "part_of",
+        "Object": "tutorials"
+    },
+    {
+        "Subject": "2dccbccb-9919-482c-9003-80c7918c02b9",
+        "Predicate": "part_of",
+        "Object": "travel"
+    },
+    {
+        "Subject": "80aa936a-f618-4234-a7be-df59a14cf8de",
+        "Predicate": "authored",
+        "Object": "e9ea0d30-d9db-4ce9-87e0-3405ff9c7f67"
+    },
+    {
+        "Subject": "e9ea0d30-d9db-4ce9-87e0-3405ff9c7f67",
+        "Predicate": "on",
+        "Object": "2dccbccb-9919-482c-9003-80c7918c02b9"
+    },
+    {
+        "Subject": "91379277-ae19-4030-9e4c-7ec946fcdc48",
+        "Predicate": "has_role",
+        "Object": "wizard"
+    }
 ]
+
+
