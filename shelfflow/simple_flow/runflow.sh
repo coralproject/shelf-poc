@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import the items.
-sponge item upsert -p input/items.json
+sponge item upsert -p input/items/
 
 # Import the metadata required to generate a view.
 xenia pattern upsert -p metadata/patterns/

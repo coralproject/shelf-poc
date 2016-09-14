@@ -1,5 +1,8 @@
 #!/bin/bash
 
+IFS=$'\n'       # make newlines the only separator
+set -f          # disable globbing
+
 # Remove the graph quads.
 wire graph remove -p cleanup/quadparams/quadparams.json
 
